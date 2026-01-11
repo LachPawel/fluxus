@@ -2,9 +2,10 @@ import * as LucideIcons from 'lucide-react';
 import {
   getNodeDef,
   CATEGORY_COLORS,
-  type NodeField,
   type FlowNodeData,
 } from '@/lib/nodes';
+import { DynamicIcon } from '@/components/common/dynamic-icon';
+import { FormField } from './editor/form-fields';
 
 // =============================================================================
 // Types
@@ -17,139 +18,6 @@ interface NodeEditorProps {
   onUpdate: (id: string, data: Partial<FlowNodeData>) => void;
   onDelete: (id: string) => void;
   onClose: () => void;
-}
-
-interface DynamicIconProps {
-  name: string;
-  className?: string;
-}
-
-interface FieldProps {
-  field: NodeField;
-  value: unknown;
-  onChange: (name: string, value: unknown) => void;
-}
-
-// =============================================================================
-// Dynamic Icon Component
-// =============================================================================
-
-function DynamicIcon({ name, className }: DynamicIconProps) {
-  const IconComponent = LucideIcons[name as keyof typeof LucideIcons] as
-    | LucideIcons.LucideIcon
-    | undefined;
-
-  if (!IconComponent) {
-    return <LucideIcons.HelpCircle className={className} />;
-  }
-
-  return <IconComponent className={className} />;
-}
-
-// =============================================================================
-// Field Components
-// =============================================================================
-
-function TextField({ field, value, onChange }: FieldProps) {
-  return (
-    <input
-      type="text"
-      value={String(value ?? '')}
-      onChange={(e) => onChange(field.name, e.target.value)}
-      placeholder={field.placeholder}
-      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500"
-    />
-  );
-}
-
-function TextareaField({ field, value, onChange }: FieldProps) {
-  return (
-    <textarea
-      value={String(value ?? '')}
-      onChange={(e) => onChange(field.name, e.target.value)}
-      placeholder={field.placeholder}
-      rows={4}
-      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 resize-none"
-    />
-  );
-}
-
-function SelectField({ field, value, onChange }: FieldProps) {
-  return (
-    <select
-      value={String(value ?? field.defaultValue ?? '')}
-      onChange={(e) => onChange(field.name, e.target.value)}
-      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500"
-    >
-      <option value="" disabled>
-        Select...
-      </option>
-      {field.options?.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-function NumberField({ field, value, onChange }: FieldProps) {
-  return (
-    <input
-      type="number"
-      value={value !== undefined && value !== null ? Number(value) : ''}
-      onChange={(e) => onChange(field.name, e.target.value ? Number(e.target.value) : null)}
-      placeholder={field.placeholder}
-      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500"
-    />
-  );
-}
-
-function BooleanField({ field, value, onChange }: FieldProps) {
-  return (
-    <label className="flex items-center gap-2 cursor-pointer">
-      <input
-        type="checkbox"
-        checked={Boolean(value)}
-        onChange={(e) => onChange(field.name, e.target.checked)}
-        className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-green-500 focus:ring-green-500/50 focus:ring-offset-zinc-900"
-      />
-      <span className="text-sm text-zinc-300">Enabled</span>
-    </label>
-  );
-}
-
-// =============================================================================
-// Field Renderer
-// =============================================================================
-
-function FormField({ field, value, onChange }: FieldProps) {
-  const renderField = () => {
-    switch (field.type) {
-      case 'text':
-        return <TextField field={field} value={value} onChange={onChange} />;
-      case 'textarea':
-        return <TextareaField field={field} value={value} onChange={onChange} />;
-      case 'select':
-        return <SelectField field={field} value={value} onChange={onChange} />;
-      case 'number':
-        return <NumberField field={field} value={value} onChange={onChange} />;
-      case 'boolean':
-        return <BooleanField field={field} value={value} onChange={onChange} />;
-      default:
-        return <TextField field={field} value={value} onChange={onChange} />;
-    }
-  };
-
-  return (
-    <div className="space-y-1.5">
-      <label className="flex items-center gap-1 text-sm font-medium text-zinc-300">
-        {field.label}
-        {field.required && <span className="text-red-400">*</span>}
-      </label>
-      {renderField()}
-    </div>
-  );
 }
 
 // =============================================================================
@@ -168,8 +36,15 @@ export function NodeEditor({
 
   if (!nodeDef) {
     return (
-      <div className="w-[280px] bg-zinc-900 border-l border-zinc-800 p-4">
-        <p className="text-red-400 text-sm">Unknown node type: {nodeType}</p>
+      <div 
+        style={{ 
+          width: 320, 
+          backgroundColor: '#ffffff', 
+          borderLeft: '1px solid #e2e8f0', 
+          padding: 16 
+        }}
+      >
+        <p style={{ color: '#dc2626', fontSize: 14 }}>Unknown node type: {nodeType}</p>
       </div>
     );
   }
@@ -187,29 +62,60 @@ export function NodeEditor({
   };
 
   return (
-    <div className="w-[280px] bg-zinc-900 border-l border-zinc-800 flex flex-col h-full">
+    <div 
+      style={{ 
+        width: 340, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%',
+        backgroundColor: '#ffffff',
+        borderLeft: '1px solid #e2e8f0'
+      }}
+    >
       {/* Header */}
-      <div className={`flex items-center justify-between px-4 py-3 ${colors.bg} border-b border-zinc-800`}>
-        <div className="flex items-center gap-2">
-          <DynamicIcon name={nodeDef.icon} className={`w-5 h-5 ${colors.text}`} />
-          <span className={`font-medium ${colors.text}`}>{data.label}</span>
+      <div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          padding: '16px 20px',
+          backgroundColor: colors.bgHex,
+          borderBottom: '1px solid #e2e8f0'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ padding: 8, borderRadius: 8, backgroundColor: '#ffffff', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+            <DynamicIcon name={nodeDef.icon} style={{ width: 18, height: 18, color: colors.textHex }} />
+          </div>
+          <span style={{ fontSize: 15, fontWeight: 600, color: colors.textHex }}>{data.label}</span>
         </div>
         <button
           onClick={onClose}
-          className="p-1 rounded hover:bg-zinc-800 transition-colors"
           title="Close"
+          style={{ 
+            padding: 6, 
+            borderRadius: 6, 
+            border: 'none',
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
-          <LucideIcons.X className="w-4 h-4 text-zinc-400" />
+          <LucideIcons.X style={{ width: 18, height: 18, color: '#94a3b8' }} />
         </button>
       </div>
 
       {/* Description */}
-      <div className="px-4 py-3 border-b border-zinc-800">
-        <p className="text-xs text-zinc-500">{nodeDef.description}</p>
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: '#64748b', margin: 0 }}>{nodeDef.description}</p>
       </div>
 
       {/* Form Fields */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 24 }}>
         {nodeDef.fields.map((field) => (
           <FormField
             key={field.name}
@@ -220,13 +126,52 @@ export function NodeEditor({
         ))}
       </div>
 
-      {/* Footer with Delete Button */}
-      <div className="px-4 py-3 border-t border-zinc-800">
+      {/* Footer */}
+      <div style={{ padding: '16px 20px', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <button
+          style={{
+             width: '100%',
+             display: 'flex', 
+             alignItems: 'center', 
+             justifyContent: 'center', 
+             gap: 8, 
+             padding: '12px 16px', 
+             fontSize: 14,
+             fontWeight: 500,
+             color: '#ffffff',
+             backgroundColor: '#2563eb',
+             border: 'none',
+             borderRadius: 8,
+             cursor: 'pointer',
+             transition: 'background-color 200ms'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#2563eb'; }}
+        >
+          Save
+        </button>
         <button
           onClick={handleDelete}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/50 rounded-md text-red-400 text-sm hover:bg-red-500/20 transition-colors"
+          style={{
+             width: '100%',
+             display: 'flex', 
+             alignItems: 'center', 
+             justifyContent: 'center', 
+             gap: 8, 
+             padding: '12px 16px', 
+             fontSize: 14,
+             fontWeight: 500,
+             color: '#dc2626',
+             backgroundColor: '#fef2f2',
+             border: '1px solid #fecaca',
+             borderRadius: 8,
+             cursor: 'pointer',
+             transition: 'background-color 200ms'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fee2e2'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2'; }}
         >
-          <LucideIcons.Trash2 className="w-4 h-4" />
+          <LucideIcons.Trash2 style={{ width: 16, height: 16 }} />
           Delete Node
         </button>
       </div>

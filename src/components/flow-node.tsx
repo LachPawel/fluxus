@@ -1,47 +1,32 @@
-import React, { memo, type ComponentType } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
-import * as LucideIcons from 'lucide-react';
+import { memo, type ComponentType } from 'react';
+import { Handle, Position, type NodeProps, type Node } from '@xyflow/react';
 import {
   getNodeDef,
   getAllNodes,
   CATEGORY_COLORS,
   type FlowNodeData,
 } from '@/lib/nodes';
-
-// =============================================================================
-// Dynamic Icon Component
-// =============================================================================
-
-interface IconProps {
-  name: string;
-  className?: string;
-}
-
-function DynamicIcon({ name, className }: IconProps) {
-  const IconComponent = LucideIcons[name as keyof typeof LucideIcons] as
-    | LucideIcons.LucideIcon
-    | undefined;
-
-  if (!IconComponent) {
-    return <LucideIcons.HelpCircle className={className} />;
-  }
-
-  return <IconComponent className={className} />;
-}
+import { calculateHandlePosition } from '@/utils/flow-utils';
+import { NodeHeader } from './flow/node-header';
+import { NodeBody } from './flow/node-body';
 
 // =============================================================================
 // Flow Node Component
 // =============================================================================
 
-interface FlowNodeComponentProps extends NodeProps<FlowNodeData> {}
-
-function FlowNodeComponent({ data, selected }: FlowNodeComponentProps) {
+function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
   const nodeDef = getNodeDef(data.type);
 
   if (!nodeDef) {
     return (
-      <div className="rounded-lg bg-red-500/20 border border-red-500 p-4">
-        <span className="text-red-500 text-sm">Unknown node: {data.type}</span>
+      <div style={{ 
+        borderRadius: 12, 
+        backgroundColor: '#fef2f2', 
+        border: '2px solid #fca5a5', 
+        padding: 16, 
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
+      }}>
+        <span style={{ color: '#dc2626', fontSize: 14 }}>Unknown node: {data.type}</span>
       </div>
     );
   }
@@ -49,17 +34,20 @@ function FlowNodeComponent({ data, selected }: FlowNodeComponentProps) {
   const colors = CATEGORY_COLORS[nodeDef.category];
   const hasInputs = nodeDef.inputs.length > 0;
 
-  // Get preview text from data or fall back to description
-  const previewText = getPreviewText(data, nodeDef);
-
   return (
     <div
-      className={`
-        relative min-w-[200px] max-w-[280px] rounded-lg border-2 bg-zinc-900 shadow-lg
-        transition-all duration-200
-        ${colors.border}
-        ${selected ? 'ring-2 ring-white/50 ring-offset-2 ring-offset-zinc-950' : ''}
-      `}
+      style={{
+        minWidth: 240,
+        maxWidth: 300,
+        borderRadius: 12,
+        backgroundColor: '#ffffff',
+        border: `2px solid ${selected ? '#3b82f6' : colors.borderHex}`,
+        boxShadow: selected 
+          ? '0 0 0 4px #eff6ff, 0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        transition: 'all 200ms ease',
+        position: 'relative'
+      }}
     >
       {/* Input Handles */}
       {hasInputs &&
@@ -71,52 +59,69 @@ function FlowNodeComponent({ data, selected }: FlowNodeComponentProps) {
               type="target"
               position={Position.Left}
               id={input.id}
-              className="!w-3 !h-3 !bg-zinc-400 !border-2 !border-zinc-600 hover:!bg-white transition-colors"
-              style={{ top: `${topPosition}%` }}
+              style={{ 
+                top: `${topPosition}%`,
+                width: 12,
+                height: 12,
+                backgroundColor: '#ffffff',
+                border: '2px solid #cbd5e1',
+                zIndex: 10
+              }}
               title={input.label}
             />
           );
         })}
 
-      {/* Header */}
-      <div className={`flex items-center gap-2 px-3 py-2 rounded-t-md ${colors.bg}`}>
-        <DynamicIcon name={nodeDef.icon} className={`w-4 h-4 ${colors.text}`} />
-        <span className={`text-sm font-medium ${colors.text}`}>{data.label}</span>
-      </div>
+      <NodeHeader 
+        label={data.label} 
+        icon={nodeDef.icon} 
+        category={nodeDef.category} 
+      />
 
-      {/* Body */}
-      <div className="px-3 py-2">
-        <p className="text-xs text-zinc-400 line-clamp-2">{previewText}</p>
-      </div>
+      <NodeBody 
+        nodeDef={nodeDef} 
+        data={data} 
+      />
 
-      {/* Output Handles - Different rendering for single vs multiple */}
+      {/* Output Handles - Single */}
       {nodeDef.outputs.length === 1 && (
         <Handle
           type="source"
           position={Position.Right}
           id={nodeDef.outputs[0].id}
-          className="!w-3 !h-3 !bg-zinc-400 !border-2 !border-zinc-600 hover:!bg-white transition-colors"
-          style={{ top: '50%' }}
+          style={{ 
+            top: '50%',
+            right: -6, // React Flow default offset is usually fine but let's be explicit if needed
+            width: 12,
+            height: 12,
+            backgroundColor: '#ffffff',
+            border: '2px solid #cbd5e1',
+            zIndex: 10
+          }}
           title={nodeDef.outputs[0].label}
         />
       )}
 
       {/* Multiple outputs with labels */}
       {nodeDef.outputs.length > 1 && (
-        <div className="flex flex-col gap-1 pb-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '0 16px 16px 16px' }}>
           {nodeDef.outputs.map((output) => (
-            <div key={output.id} className="relative flex items-center justify-end pr-3">
-              <span className="text-[10px] text-zinc-500 mr-2">{output.label}</span>
+            <div key={output.id} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <span style={{ fontSize: 12, color: '#64748b', marginRight: 12, fontWeight: 500 }}>{output.label}</span>
               <Handle
                 type="source"
                 position={Position.Right}
                 id={output.id}
-                className="!relative !top-0 !right-0 !transform-none !w-3 !h-3 !bg-zinc-400 !border-2 !border-zinc-600 hover:!bg-white transition-colors"
                 style={{
                   position: 'absolute',
                   top: '50%',
-                  right: '-6px',
-                  transform: 'translateY(-50%)',
+                  right: -22,
+                  width: 12,
+                  height: 12,
+                  backgroundColor: '#ffffff',
+                  border: '2px solid #cbd5e1',
+                  zIndex: 10,
+                  transform: 'translateY(-50%)'
                 }}
                 title={output.label}
               />
@@ -126,39 +131,6 @@ function FlowNodeComponent({ data, selected }: FlowNodeComponentProps) {
       )}
     </div>
   );
-}
-
-// =============================================================================
-// Helper Functions
-// =============================================================================
-
-/**
- * Calculate handle position for multiple handles
- */
-function calculateHandlePosition(index: number, total: number): number {
-  if (total === 1) return 50;
-  const spacing = 60 / (total + 1);
-  return 20 + spacing * (index + 1);
-}
-
-/**
- * Get preview text from node data
- */
-function getPreviewText(
-  data: FlowNodeData,
-  nodeDef: ReturnType<typeof getNodeDef>
-): string {
-  if (!nodeDef) return '';
-
-  // Try to get a meaningful preview from the first text/textarea field
-  for (const field of nodeDef.fields) {
-    if ((field.type === 'text' || field.type === 'textarea') && data[field.name]) {
-      const value = String(data[field.name]);
-      return value.length > 80 ? value.slice(0, 80) + '...' : value;
-    }
-  }
-
-  return nodeDef.description;
 }
 
 // =============================================================================
@@ -175,8 +147,8 @@ export const FlowNode = memo(FlowNodeComponent);
  * Creates a Record mapping all registered node types to the FlowNode component
  * Use this to pass to ReactFlow's nodeTypes prop
  */
-export function createNodeTypes(): Record<string, ComponentType<NodeProps<FlowNodeData>>> {
-  const nodeTypes: Record<string, ComponentType<NodeProps<FlowNodeData>>> = {};
+export function createNodeTypes(): Record<string, ComponentType<NodeProps<Node<FlowNodeData>>>> {
+  const nodeTypes: Record<string, ComponentType<NodeProps<Node<FlowNodeData>>>> = {};
 
   for (const node of getAllNodes()) {
     nodeTypes[node.type] = FlowNode;

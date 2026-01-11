@@ -8,7 +8,7 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-  type Node,
+  ConnectionLineType,
   type Edge,
   type OnNodesChange,
   type OnEdgesChange,
@@ -23,10 +23,10 @@ import { createNodeTypes } from '@/components/flow-node';
 import {
   getNodeDef,
   createNodeData,
-  CATEGORY_COLORS,
   type FlowNodeData,
   type FlowNode,
 } from '@/lib/nodes';
+import { getMiniMapNodeColor } from '@/utils/flow-utils';
 
 // =============================================================================
 // Initial Data
@@ -65,24 +65,6 @@ const initialEdges: Edge[] = [
     targetHandle: 'in',
   },
 ];
-
-// =============================================================================
-// MiniMap Node Color
-// =============================================================================
-
-function getMiniMapNodeColor(node: Node<FlowNodeData>): string {
-  const nodeDef = getNodeDef(node.data.type);
-  if (!nodeDef) return '#71717a'; // zinc-500
-
-  const categoryColorMap: Record<string, string> = {
-    trigger: '#22c55e', // green-500
-    action: '#3b82f6', // blue-500
-    condition: '#f59e0b', // amber-500
-    utility: '#a855f7', // purple-500
-  };
-
-  return categoryColorMap[nodeDef.category] || '#71717a';
-}
 
 // =============================================================================
 // Flow Canvas Component
@@ -204,12 +186,12 @@ export function FlowCanvas() {
   // ==========================================================================
 
   return (
-    <div className="flex h-screen w-screen bg-zinc-950">
+    <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
       {/* Node Palette - Left Sidebar */}
       <NodePalette />
 
       {/* Flow Canvas - Center */}
-      <div ref={reactFlowWrapper} className="flex-1 h-full">
+      <div ref={reactFlowWrapper} style={{ flex: 1, height: '100%', position: 'relative' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -225,23 +207,36 @@ export function FlowCanvas() {
           snapToGrid
           snapGrid={[16, 16]}
           defaultEdgeOptions={{
-            style: { stroke: '#71717a', strokeWidth: 2 },
+            style: { stroke: '#94a3b8', strokeWidth: 2 },
             type: 'smoothstep',
           }}
-          connectionLineStyle={{ stroke: '#22c55e', strokeWidth: 2 }}
-          connectionLineType="smoothstep"
+          connectionLineStyle={{ stroke: '#3b82f6', strokeWidth: 2 }}
+          connectionLineType={ConnectionLineType.SmoothStep}
         >
           <Background
             variant={BackgroundVariant.Dots}
-            gap={16}
+            gap={20}
             size={1}
-            color="#3f3f46"
+            color="#cbd5e1"
           />
-          <Controls className="!bg-zinc-800 !border-zinc-700 !rounded-lg [&>button]:!bg-zinc-800 [&>button]:!border-zinc-700 [&>button]:!text-zinc-400 [&>button:hover]:!bg-zinc-700" />
+          <Controls 
+            style={{ 
+              backgroundColor: '#ffffff', 
+              border: '1px solid #e2e8f0', 
+              borderRadius: 8, 
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              padding: 4
+            }}
+          />
           <MiniMap
             nodeColor={getMiniMapNodeColor}
-            maskColor="rgba(0, 0, 0, 0.8)"
-            className="!bg-zinc-900 !border-zinc-700 !rounded-lg"
+            maskColor="rgba(248, 250, 252, 0.8)"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: 8,
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}
           />
         </ReactFlow>
       </div>
@@ -257,14 +252,36 @@ export function FlowCanvas() {
           onClose={onEditorClose}
         />
       ) : (
-        <div className="w-[280px] bg-zinc-900 border-l border-zinc-800 flex flex-col items-center justify-center p-4">
-          <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center mx-auto mb-3">
+        <div 
+          style={{ 
+            width: 340, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            padding: 32,
+            backgroundColor: '#ffffff',
+            borderLeft: '1px solid #e2e8f0'
+          }}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <div 
+              style={{ 
+                width: 72, 
+                height: 72, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                margin: '0 auto 20px auto',
+                backgroundColor: '#eff6ff',
+                borderRadius: '50%'
+              }}
+            >
               <svg
-                className="w-6 h-6 text-zinc-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                style={{ width: 32, height: 32, color: '#3b82f6' }}
               >
                 <path
                   strokeLinecap="round"
@@ -274,8 +291,8 @@ export function FlowCanvas() {
                 />
               </svg>
             </div>
-            <p className="text-zinc-500 text-sm">Select a node to edit</p>
-            <p className="text-zinc-600 text-xs mt-1">
+            <p style={{ fontSize: 15, fontWeight: 600, color: '#334155' }}>Select a node to edit</p>
+            <p style={{ fontSize: 14, marginTop: 8, lineHeight: 1.5, color: '#64748b' }}>
               or drag a node from the palette
             </p>
           </div>
