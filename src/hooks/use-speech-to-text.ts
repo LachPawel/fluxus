@@ -61,82 +61,115 @@ export function useSpeechToText(options: UseSpeechToTextOptions = {}): UseSpeech
 
   const recognitionRef = useRef<SpeechRecognitionType | null>(null);
 
-  // Check for browser support
+  // Use refs for callbacks to avoid stale closures
+  const onResultRef = useRef(onResult);
+  const onErrorRef = useRef(onError);
+
+  // Keep refs updated
   useEffect(() => {
-    const SpeechRecognition =
+    onResultRef.current = onResult;
+    onErrorRef.current = onError;
+  }, [onResult, onError]);
+
+  // Get the SpeechRecognition constructor
+  const getSpeechRecognition = useCallback(() => {
+    return (
       (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionType })
         .SpeechRecognition ||
       (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionType })
-        .webkitSpeechRecognition;
+        .webkitSpeechRecognition
+    );
+  }, []);
 
-    if (SpeechRecognition) {
-      setIsSupported(true);
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = continuous;
-      recognitionRef.current.interimResults = interimResults;
-      recognitionRef.current.lang = language;
-
-      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const result = event.results[i];
-          if (result.isFinal) {
-            finalTranscript += result[0].transcript;
-          } else {
-            interimTranscript += result[0].transcript;
-          }
-        }
-
-        const currentTranscript = finalTranscript || interimTranscript;
-        setTranscript(currentTranscript);
-
-        if (finalTranscript && onResult) {
-          onResult(finalTranscript);
-        }
-      };
-
-      recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
-        const errorMessage = getErrorMessage(event.error);
-        setError(errorMessage);
-        setIsListening(false);
-        if (onError) {
-          onError(errorMessage);
-        }
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onstart = () => {
-        setIsListening(true);
-        setError(null);
-      };
-    } else {
-      setIsSupported(false);
-    }
+  // Check for browser support on mount
+  useEffect(() => {
+    const SpeechRecognition = getSpeechRecognition();
+    setIsSupported(!!SpeechRecognition);
 
     return () => {
+      // Cleanup on unmount
       if (recognitionRef.current) {
         recognitionRef.current.abort();
+        recognitionRef.current = null;
       }
     };
-  }, [continuous, interimResults, language, onResult, onError]);
+  }, [getSpeechRecognition]);
+
+  // Create and configure a fresh recognition instance
+  const createRecognition = useCallback(() => {
+    const SpeechRecognition = getSpeechRecognition();
+    if (!SpeechRecognition) return null;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = continuous;
+    recognition.interimResults = interimResults;
+    recognition.lang = language;
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript;
+        } else {
+          interimTranscript += result[0].transcript;
+        }
+      }
+
+      const currentTranscript = finalTranscript || interimTranscript;
+      setTranscript(currentTranscript);
+
+      if (finalTranscript && onResultRef.current) {
+        onResultRef.current(finalTranscript);
+      }
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      const errorMessage = getErrorMessage(event.error);
+      setError(errorMessage);
+      setIsListening(false);
+      if (onErrorRef.current) {
+        onErrorRef.current(errorMessage);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setError(null);
+    };
+
+    return recognition;
+  }, [continuous, interimResults, language, getSpeechRecognition]);
 
   const startListening = useCallback(() => {
-    if (recognitionRef.current && !isListening) {
-      setTranscript('');
-      setError(null);
-      try {
-        recognitionRef.current.start();
-      } catch (err) {
-        // Recognition might already be started
-        console.error('Speech recognition error:', err);
-      }
+    if (isListening) return;
+
+    // Abort any existing recognition
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
     }
-  }, [isListening]);
+
+    // Create a fresh instance each time (fixes network errors)
+    const recognition = createRecognition();
+    if (!recognition) return;
+
+    recognitionRef.current = recognition;
+    setTranscript('');
+    setError(null);
+
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error('Speech recognition start error:', err);
+      setError('Failed to start speech recognition. Please try again.');
+    }
+  }, [isListening, createRecognition]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current && isListening) {
@@ -176,14 +209,22 @@ function getErrorMessage(error: string): string {
       return 'No microphone was found. Ensure that a microphone is installed.';
     case 'not-allowed':
       return 'Microphone permission was denied. Please allow microphone access.';
-    case 'network':
-      return 'Network error occurred. Please check your connection.';
+    case 'network': {
+      // Check if user is on Brave
+      const isBrave =
+        (navigator as unknown as { brave?: { isBrave?: () => Promise<boolean> } }).brave !==
+        undefined;
+      if (isBrave) {
+        return 'Brave blocks speech recognition. Go to brave://settings/privacy and enable "Use Google services for push messaging" or use Chrome/Safari.';
+      }
+      return 'Network error. Speech recognition requires an internet connection.';
+    }
     case 'aborted':
       return 'Speech recognition was aborted.';
     case 'language-not-supported':
       return 'The language is not supported.';
     case 'service-not-allowed':
-      return 'Speech recognition service is not allowed.';
+      return 'Speech recognition service is not allowed. Try using Chrome or Safari.';
     default:
       return `Speech recognition error: ${error}`;
   }

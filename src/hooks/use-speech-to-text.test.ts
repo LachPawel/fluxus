@@ -286,8 +286,17 @@ describe('useSpeechToText', () => {
     expect(result.current.isListening).toBe(false);
   });
 
-  it('should abort recognition on unmount', () => {
-    const { unmount } = renderHook(() => useSpeechToText());
+  it('should abort recognition on unmount if listening', async () => {
+    const { result, unmount } = renderHook(() => useSpeechToText());
+
+    // Start listening first to create a recognition instance
+    act(() => {
+      result.current.startListening();
+    });
+
+    await waitFor(() => {
+      expect(result.current.isListening).toBe(true);
+    });
 
     unmount();
 
