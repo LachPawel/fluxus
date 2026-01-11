@@ -90,7 +90,7 @@ export function NodeEditor({
 
       {/* Footer */}
       <div className="px-5 py-4 border-t border-slate-200 flex flex-col gap-3 bg-slate-50">
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-sm shadow-blue-600/20">
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-black rounded-lg hover:bg-slate-800 transition-colors cursor-pointer shadow-sm">
           Save
         </button>
         <button
