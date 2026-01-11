@@ -42,7 +42,7 @@ export function AIChatPanel({
     >
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200">
-        <Bot className="w-5 h-5 text-blue-500" />
+        <Bot className="w-5 h-5 text-slate-900" />
         <h3 className="font-medium text-slate-900">AI Assistant</h3>
       </div>
 
@@ -86,7 +86,7 @@ export function AIChatPanel({
             onChange={(e) => setInput(e.target.value)}
             placeholder={placeholder}
             disabled={isLoading}
-            className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-400"
+            className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-400"
           />
           {isLoading ? (
             <button

@@ -20,11 +20,13 @@ import {
   type OnConnectEnd,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { FolderOpen } from 'lucide-react';
 
 import { NodePicker } from '@/components/flow/node-picker';
 import { NodeEditor } from '@/components/node-editor';
 import { FlowNode } from '@/components/flow-node';
 import { FlowAIChatPanel } from '@/components/ai/flow-ai-chat-panel';
+import { TemplateFlowPicker } from '@/components/flow/template-flow-picker';
 import { useFlowAIChat } from '@/hooks/use-flow-ai-chat';
 import {
   getNodeDef,
@@ -33,6 +35,7 @@ import {
   type FlowNodeData,
   type FlowNode as FlowNodeType,
 } from '@/lib/nodes';
+import { type TemplateFlow } from '@/lib/template-flows';
 import { initialNodes, initialEdges } from '@/lib/initial-data';
 import { getMiniMapNodeColor } from '@/utils/flow-utils';
 import { useFlowTheme } from '@/hooks/use-flow-theme';
@@ -48,6 +51,7 @@ export function FlowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance<FlowNodeType, Edge> | null>(null);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   // AI Chat integration
   const aiChat = useFlowAIChat({ nodes, edges }, { setNodes, setEdges, setSelectedNodeId });
@@ -260,6 +264,46 @@ export function FlowCanvas() {
   }, []);
 
   // ==========================================================================
+  // Template Flow Handler
+  // ==========================================================================
+
+  const onLoadTemplate = useCallback(
+    (template: TemplateFlow) => {
+      // Generate unique IDs for the template nodes to avoid conflicts
+      const timestamp = Date.now();
+      const idMap = new Map<string, string>();
+
+      const newNodes = template.nodes.map((node) => {
+        const newId = `${node.id}-${timestamp}`;
+        idMap.set(node.id, newId);
+        return {
+          ...node,
+          id: newId,
+        };
+      });
+
+      const newEdges = template.edges.map((edge) => ({
+        ...edge,
+        id: `${edge.id}-${timestamp}`,
+        source: idMap.get(edge.source) || edge.source,
+        target: idMap.get(edge.target) || edge.target,
+      }));
+
+      // Clear existing flow and load template
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setSelectedNodeId(null);
+      setShowTemplatePicker(false);
+
+      // Fit view after loading
+      setTimeout(() => {
+        rfInstance?.fitView({ padding: 0.2 });
+      }, 100);
+    },
+    [rfInstance],
+  );
+
+  // ==========================================================================
   // Render
   // ==========================================================================
 
@@ -308,6 +352,16 @@ export function FlowCanvas() {
           />
         </ReactFlow>
 
+        {/* Template Flow Button */}
+        <button
+          onClick={() => setShowTemplatePicker(true)}
+          className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all z-10"
+          title="Load Template Flow"
+        >
+          <FolderOpen className="w-4 h-4" />
+          <span className="text-sm font-medium">Templates</span>
+        </button>
+
         {pickerState.visible && (
           <NodePicker
             position={pickerState.position}
@@ -316,6 +370,14 @@ export function FlowCanvas() {
           />
         )}
       </div>
+
+      {/* Template Flow Picker Modal */}
+      {showTemplatePicker && (
+        <TemplateFlowPicker
+          onSelect={onLoadTemplate}
+          onClose={() => setShowTemplatePicker(false)}
+        />
+      )}
 
       {/* Node Editor - Right Sidebar */}
       {selectedNode ? (
@@ -330,8 +392,8 @@ export function FlowCanvas() {
       ) : (
         <div className="w-[340px] flex flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
           <div className="text-center">
-            <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-blue-50 rounded-full">
-              <SelectNodeIcon className="w-8 h-8 text-blue-500" />
+            <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-slate-100 rounded-full">
+              <SelectNodeIcon className="w-8 h-8 text-slate-800" />
             </div>
             <p className="text-[15px] font-semibold text-slate-700">Select a node to edit</p>
             <p className="text-sm mt-2 leading-relaxed text-slate-500">
