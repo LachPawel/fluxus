@@ -45,7 +45,7 @@ export function FlowCanvas() {
   const [nodes, setNodes] = useState<FlowNodeType[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const [rfInstance, setRfInstance] = useState<ReactFlowInstance<FlowNodeType, Edge> | null>(null);
 
   // Connection handling
   const connectingNodeId = useRef<string | null>(null);
@@ -163,12 +163,17 @@ export function FlowCanvas() {
       setNodes((nds) => [...nds, newNode]);
 
       if (sourceNodeId) {
+        // Try to find the default input handle for the new node
+        const nodeDef = getNodeDef(nodeType);
+        const targetHandle = nodeDef?.inputs[0]?.id || null;
+
         setEdges((eds) =>
           addEdge(
             {
               source: sourceNodeId,
               target: newNode.id,
               sourceHandle: sourceHandleId,
+              targetHandle,
             },
             eds,
           ),
@@ -199,11 +204,13 @@ export function FlowCanvas() {
   }, []);
 
   const onPaneContextMenu = useCallback(
-    (event: React.MouseEvent) => {
+    (event: React.MouseEvent | MouseEvent) => {
       event.preventDefault();
 
       if (rfInstance && reactFlowWrapper.current) {
-        const { clientX, clientY } = event;
+        // Handle both React.MouseEvent and native MouseEvent
+        const clientX = (event as React.MouseEvent).clientX ?? (event as MouseEvent).clientX;
+        const clientY = (event as React.MouseEvent).clientY ?? (event as MouseEvent).clientY;
 
         // precise flow position
         const flowPosition = rfInstance.screenToFlowPosition({ x: clientX, y: clientY });
@@ -255,7 +262,7 @@ export function FlowCanvas() {
     <div className="flex w-screen h-screen bg-slate-50 overflow-hidden">
       {/* Flow Canvas - Center */}
       <div ref={reactFlowWrapper} className="flex-1 h-full relative">
-        <ReactFlow
+        <ReactFlow<FlowNodeType, Edge>
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
