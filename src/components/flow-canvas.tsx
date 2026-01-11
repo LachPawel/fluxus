@@ -8,7 +8,7 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-  type Node,
+  ConnectionLineType,
   type Edge,
   type OnNodesChange,
   type OnEdgesChange,
@@ -23,66 +23,13 @@ import { createNodeTypes } from '@/components/flow-node';
 import {
   getNodeDef,
   createNodeData,
-  CATEGORY_COLORS,
   type FlowNodeData,
   type FlowNode,
 } from '@/lib/nodes';
-
-// =============================================================================
-// Initial Data
-// =============================================================================
-
-const initialNodes: FlowNode[] = [
-  {
-    id: 'trigger-1',
-    type: 'trigger_keyword',
-    position: { x: 250, y: 100 },
-    data: {
-      type: 'trigger_keyword',
-      label: 'Keyword Trigger',
-      keywords: 'hello, hi, start',
-      matchType: 'contains',
-    },
-  },
-  {
-    id: 'action-1',
-    type: 'action_message',
-    position: { x: 250, y: 300 },
-    data: {
-      type: 'action_message',
-      label: 'Send Message',
-      message: 'Hello! Welcome to our WhatsApp bot. How can I help you today?',
-    },
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'e-trigger-action',
-    source: 'trigger-1',
-    sourceHandle: 'triggered',
-    target: 'action-1',
-    targetHandle: 'in',
-  },
-];
-
-// =============================================================================
-// MiniMap Node Color
-// =============================================================================
-
-function getMiniMapNodeColor(node: Node<FlowNodeData>): string {
-  const nodeDef = getNodeDef(node.data.type);
-  if (!nodeDef) return '#71717a'; // zinc-500
-
-  const categoryColorMap: Record<string, string> = {
-    trigger: '#22c55e', // green-500
-    action: '#3b82f6', // blue-500
-    condition: '#f59e0b', // amber-500
-    utility: '#a855f7', // purple-500
-  };
-
-  return categoryColorMap[nodeDef.category] || '#71717a';
-}
+import { initialNodes, initialEdges } from '@/lib/initial-data';
+import { getMiniMapNodeColor } from '@/utils/flow-utils';
+import { useFlowTheme } from '@/hooks/use-flow-theme';
+import { SelectNodeIcon } from '@/components/icons/select-node-icon';
 
 // =============================================================================
 // Flow Canvas Component
@@ -93,6 +40,9 @@ export function FlowCanvas() {
   const [nodes, setNodes] = useState<FlowNode[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+  // Theme
+  const theme = useFlowTheme();
 
   // Memoize node types
   const nodeTypes = useMemo(() => createNodeTypes(), []);
@@ -204,12 +154,12 @@ export function FlowCanvas() {
   // ==========================================================================
 
   return (
-    <div className="flex h-screen w-screen bg-zinc-950">
+    <div className="flex w-screen h-screen bg-slate-50 overflow-hidden">
       {/* Node Palette - Left Sidebar */}
       <NodePalette />
 
       {/* Flow Canvas - Center */}
-      <div ref={reactFlowWrapper} className="flex-1 h-full">
+      <div ref={reactFlowWrapper} className="flex-1 h-full relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -225,23 +175,27 @@ export function FlowCanvas() {
           snapToGrid
           snapGrid={[16, 16]}
           defaultEdgeOptions={{
-            style: { stroke: '#71717a', strokeWidth: 2 },
+            style: theme.defaultEdgeOptions.style,
             type: 'smoothstep',
           }}
-          connectionLineStyle={{ stroke: '#22c55e', strokeWidth: 2 }}
-          connectionLineType="smoothstep"
+          connectionLineStyle={theme.connectionLineStyle}
+          connectionLineType={ConnectionLineType.SmoothStep}
         >
           <Background
             variant={BackgroundVariant.Dots}
-            gap={16}
+            gap={20}
             size={1}
-            color="#3f3f46"
+            color={theme.background.color}
           />
-          <Controls className="!bg-zinc-800 !border-zinc-700 !rounded-lg [&>button]:!bg-zinc-800 [&>button]:!border-zinc-700 [&>button]:!text-zinc-400 [&>button:hover]:!bg-zinc-700" />
+          <Controls 
+            className="bg-white border border-slate-200 rounded-lg shadow-md p-1"
+            style={{}} // Override default styles if necessary by passing empty object or specific overrides
+          />
           <MiniMap
             nodeColor={getMiniMapNodeColor}
-            maskColor="rgba(0, 0, 0, 0.8)"
-            className="!bg-zinc-900 !border-zinc-700 !rounded-lg"
+            maskColor={theme.minimap.maskColor}
+            className="bg-white border border-slate-200 rounded-lg shadow-md"
+            style={{}}
           />
         </ReactFlow>
       </div>
@@ -257,25 +211,13 @@ export function FlowCanvas() {
           onClose={onEditorClose}
         />
       ) : (
-        <div className="w-[280px] bg-zinc-900 border-l border-zinc-800 flex flex-col items-center justify-center p-4">
+        <div className="w-[340px] flex flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
           <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center mx-auto mb-3">
-              <svg
-                className="w-6 h-6 text-zinc-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                />
-              </svg>
+            <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-blue-50 rounded-full">
+              <SelectNodeIcon className="w-8 h-8 text-blue-500" />
             </div>
-            <p className="text-zinc-500 text-sm">Select a node to edit</p>
-            <p className="text-zinc-600 text-xs mt-1">
+            <p className="text-[15px] font-semibold text-slate-700">Select a node to edit</p>
+            <p className="text-sm mt-2 leading-relaxed text-slate-500">
               or drag a node from the palette
             </p>
           </div>

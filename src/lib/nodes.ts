@@ -61,26 +61,42 @@ export interface Flow {
 // Category Colors
 // =============================================================================
 
-export const CATEGORY_COLORS: Record<NodeCategory, { bg: string; border: string; text: string }> = {
+export const CATEGORY_COLORS: Record<NodeCategory, { bg: string; border: string; text: string; accent: string; bgHex: string; borderHex: string; textHex: string }> = {
   trigger: {
-    bg: 'bg-green-500/10',
-    border: 'border-green-500',
-    text: 'text-green-500',
+    bg: 'bg-blue-50',
+    border: 'border-blue-400',
+    text: 'text-blue-600',
+    accent: '#3b82f6',
+    bgHex: '#eff6ff',
+    borderHex: '#60a5fa',
+    textHex: '#2563eb',
   },
   action: {
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-500',
-    text: 'text-blue-500',
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-400',
+    text: 'text-indigo-600',
+    accent: '#6366f1',
+    bgHex: '#eef2ff',
+    borderHex: '#818cf8',
+    textHex: '#4f46e5',
   },
   condition: {
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-500',
-    text: 'text-amber-500',
+    bg: 'bg-amber-50',
+    border: 'border-amber-400',
+    text: 'text-amber-600',
+    accent: '#f59e0b',
+    bgHex: '#fffbeb',
+    borderHex: '#fbbf24',
+    textHex: '#d97706',
   },
   utility: {
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500',
-    text: 'text-purple-500',
+    bg: 'bg-slate-50',
+    border: 'border-slate-400',
+    text: 'text-slate-600',
+    accent: '#64748b',
+    bgHex: '#f8fafc',
+    borderHex: '#94a3b8',
+    textHex: '#475569',
   },
 };
 
