@@ -48,7 +48,7 @@ export function FlowCanvas() {
 
   // Memoize node types
   const nodeTypes = useMemo(() => {
-    const types: Record<string, ComponentType<NodeProps>> = {};
+    const types: Record<string, ComponentType<NodeProps<FlowNodeType>>> = {};
     for (const node of getAllNodes()) {
       types[node.type] = FlowNode;
     }
@@ -65,7 +65,7 @@ export function FlowCanvas() {
   // Node/Edge Change Handlers
   // ==========================================================================
 
-  const onNodesChange: OnNodesChange<FlowNode> = useCallback((changes) => {
+  const onNodesChange: OnNodesChange<FlowNodeType> = useCallback((changes) => {
     setNodes((nds) => applyNodeChanges(changes, nds));
   }, []);
 
@@ -81,7 +81,7 @@ export function FlowCanvas() {
   // Selection Handlers
   // ==========================================================================
 
-  const onNodeClick: NodeMouseHandler<FlowNode> = useCallback((_, node) => {
+  const onNodeClick: NodeMouseHandler<FlowNodeType> = useCallback((_, node) => {
     setSelectedNodeId(node.id);
   }, []);
 
@@ -119,7 +119,7 @@ export function FlowCanvas() {
     const nodeData = createNodeData(nodeType);
     if (!nodeData) return;
 
-    const newNode: FlowNode = {
+    const newNode: FlowNodeType = {
       id: `${nodeType}-${Date.now()}`,
       type: nodeType,
       position,
