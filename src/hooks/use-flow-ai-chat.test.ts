@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useFlowAIChat, type FlowState, type FlowActions } from './use-flow-ai-chat';
 import type { Edge } from '@xyflow/react';
 import type { FlowNode as FlowNodeType } from '@/lib/nodes';
@@ -8,22 +8,30 @@ import type { FlowNode as FlowNodeType } from '@/lib/nodes';
 const mockAppend = vi.fn();
 const mockSetMessages = vi.fn();
 
+// Helper to create mock return value
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createMockChatReturn = (overrides: Record<string, unknown> = {}): any => ({
+  messages: [],
+  input: '',
+  setInput: vi.fn(),
+  append: mockAppend,
+  isLoading: false,
+  stop: vi.fn(),
+  error: undefined,
+  handleInputChange: vi.fn(),
+  handleSubmit: vi.fn(),
+  reload: vi.fn(),
+  setMessages: mockSetMessages,
+  id: 'test-chat',
+  status: 'ready',
+  data: undefined,
+  addToolResult: vi.fn(),
+  metadata: undefined,
+  ...overrides,
+});
+
 vi.mock('@ai-sdk/react', () => ({
-  useChat: vi.fn(() => ({
-    messages: [],
-    input: '',
-    setInput: vi.fn(),
-    append: mockAppend,
-    isLoading: false,
-    stop: vi.fn(),
-    error: null,
-    handleInputChange: vi.fn(),
-    handleSubmit: vi.fn(),
-    reload: vi.fn(),
-    setMessages: mockSetMessages,
-    id: 'test-chat',
-    status: 'ready',
-  })),
+  useChat: vi.fn(() => createMockChatReturn()),
 }));
 
 // Mock the nodes module
@@ -57,24 +65,7 @@ describe('useFlowAIChat', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseChat.mockReturnValue({
-      messages: [],
-      input: '',
-      setInput: vi.fn(),
-      append: mockAppend,
-      isLoading: false,
-      stop: vi.fn(),
-      error: null,
-      handleInputChange: vi.fn(),
-      handleSubmit: vi.fn(),
-      reload: vi.fn(),
-      setMessages: mockSetMessages,
-      id: 'test-chat',
-      status: 'ready' as const,
-      data: undefined,
-      addToolResult: vi.fn(),
-      metadata: undefined,
-    });
+    mockUseChat.mockReturnValue(createMockChatReturn());
   });
 
   it('should return chat object with flowState', () => {
@@ -85,25 +76,10 @@ describe('useFlowAIChat', () => {
   });
 
   it('should return messages from useChat', () => {
-    const testMessages = [{ id: '1', role: 'user' as const, content: 'test' }];
-    mockUseChat.mockReturnValue({
-      messages: testMessages,
-      input: '',
-      setInput: vi.fn(),
-      append: mockAppend,
-      isLoading: false,
-      stop: vi.fn(),
-      error: null,
-      handleInputChange: vi.fn(),
-      handleSubmit: vi.fn(),
-      reload: vi.fn(),
-      setMessages: mockSetMessages,
-      id: 'test-chat',
-      status: 'ready' as const,
-      data: undefined,
-      addToolResult: vi.fn(),
-      metadata: undefined,
-    });
+    const testMessages = [
+      { id: '1', role: 'user' as const, parts: [{ type: 'text' as const, text: 'test' }] },
+    ];
+    mockUseChat.mockReturnValue(createMockChatReturn({ messages: testMessages }));
 
     const { result } = renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -132,24 +108,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -179,24 +138,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -226,24 +168,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -292,24 +217,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(flowStateWithNodes, defaultFlowActions));
 
@@ -339,24 +247,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -386,24 +277,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -434,24 +308,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -483,24 +340,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       const { rerender } = renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 
@@ -536,24 +376,7 @@ describe('useFlowAIChat', () => {
         },
       ];
 
-      mockUseChat.mockReturnValue({
-        messages: messagesWithToolResult,
-        input: '',
-        setInput: vi.fn(),
-        append: mockAppend,
-        isLoading: false,
-        stop: vi.fn(),
-        error: null,
-        handleInputChange: vi.fn(),
-        handleSubmit: vi.fn(),
-        reload: vi.fn(),
-        setMessages: mockSetMessages,
-        id: 'test-chat',
-        status: 'ready' as const,
-        data: undefined,
-        addToolResult: vi.fn(),
-        metadata: undefined,
-      });
+      mockUseChat.mockReturnValue(createMockChatReturn({ messages: messagesWithToolResult }));
 
       renderHook(() => useFlowAIChat(defaultFlowState, defaultFlowActions));
 

@@ -155,14 +155,13 @@ describe('FlowAIChatPanel', () => {
   });
 
   it('should render user messages', () => {
-    const messages: UIMessage[] = [
+    const messages = [
       {
         id: '1',
         role: 'user' as const,
-        content: 'Add a trigger node',
         parts: [{ type: 'text' as const, text: 'Add a trigger node' }],
       },
-    ];
+    ] as UIMessage[];
 
     render(<FlowAIChatPanel {...defaultProps} messages={messages} />);
 
@@ -173,20 +172,18 @@ describe('FlowAIChatPanel', () => {
   });
 
   it('should render assistant messages', () => {
-    const messages: UIMessage[] = [
+    const messages = [
       {
         id: '1',
         role: 'user' as const,
-        content: 'Add a trigger node',
         parts: [{ type: 'text' as const, text: 'Add a trigger node' }],
       },
       {
         id: '2',
         role: 'assistant' as const,
-        content: 'I added a trigger node for you.',
         parts: [{ type: 'text' as const, text: 'I added a trigger node for you.' }],
       },
-    ];
+    ] as UIMessage[];
 
     render(<FlowAIChatPanel {...defaultProps} messages={messages} />);
 
@@ -219,19 +216,20 @@ describe('FlowAIChatPanel', () => {
   });
 
   it('should render tool parts with pending state', () => {
-    const messages: UIMessage[] = [
+    const messages = [
       {
         id: '1',
         role: 'assistant' as const,
-        content: '',
         parts: [
           {
             type: 'tool-addNode' as const,
-            state: 'input-streaming',
-          } as unknown as UIMessage['parts'][0],
+            toolCallId: 'call-1',
+            state: 'input-streaming' as const,
+            input: {},
+          },
         ],
       },
-    ];
+    ] as UIMessage[];
 
     render(<FlowAIChatPanel {...defaultProps} messages={messages} />);
 
@@ -242,19 +240,21 @@ describe('FlowAIChatPanel', () => {
   });
 
   it('should render tool parts with completed state', () => {
-    const messages: UIMessage[] = [
+    const messages = [
       {
         id: '1',
         role: 'assistant' as const,
-        content: '',
         parts: [
           {
             type: 'tool-addNode' as const,
-            state: 'output-available',
-          } as unknown as UIMessage['parts'][0],
+            toolCallId: 'call-1',
+            state: 'output-available' as const,
+            input: {},
+            output: { success: true },
+          },
         ],
       },
-    ];
+    ] as UIMessage[];
 
     render(<FlowAIChatPanel {...defaultProps} messages={messages} />);
 
