@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../src/**/*.{js,ts,jsx,tsx}";
 
 * {
   margin: 0;
@@ -19,6 +20,6 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #09090b;
-  color: #fafafa;
+  background-color: #f8fafc;
+  color: #1e293b;
 }
