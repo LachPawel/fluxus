@@ -14,18 +14,27 @@ interface AIChatPanelProps {
 }
 
 /**
- * AI Chat Panel component using Vercel AI SDK.
+ * AI Chat Panel component using Vercel AI SDK v6.
  * Can be integrated into the flow editor for AI-assisted workflow creation.
  */
 export function AIChatPanel({
-  systemPrompt = 'You are a helpful assistant for creating workflows and automations.',
+  systemPrompt:
+    _systemPrompt = 'You are a helpful assistant for creating workflows and automations.',
   placeholder = 'Ask AI to help with your workflow...',
   className = '',
 }: AIChatPanelProps) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload, stop } =
-    useAIChat({
-      body: { system: systemPrompt },
-    });
+  const { messages, sendMessage, status, error, regenerate, stop } = useAIChat();
+  const [input, setInput] = useState('');
+
+  const isLoading = status === 'streaming' || status === 'submitted';
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.trim()) {
+      sendMessage({ text: input });
+      setInput('');
+    }
+  };
 
   return (
     <div
@@ -61,7 +70,7 @@ export function AIChatPanel({
         {error && (
           <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
             <p>Error: {error.message}</p>
-            <button onClick={() => reload()} className="text-red-600 underline mt-1">
+            <button onClick={() => regenerate()} className="text-red-600 underline mt-1">
               Try again
             </button>
           </div>
@@ -74,7 +83,7 @@ export function AIChatPanel({
           <input
             type="text"
             value={input}
-            onChange={handleInputChange}
+            onChange={(e) => setInput(e.target.value)}
             placeholder={placeholder}
             disabled={isLoading}
             className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-400"
@@ -105,6 +114,12 @@ export function AIChatPanel({
 function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === 'user';
 
+  // Extract text content from message parts (AI SDK v6 format)
+  const textContent = message.parts
+    .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
+
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       <div
@@ -123,7 +138,7 @@ function MessageBubble({ message }: { message: Message }) {
           isUser ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-900'
         }`}
       >
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <p className="text-sm whitespace-pre-wrap">{textContent}</p>
       </div>
     </div>
   );
