@@ -1,8 +1,20 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, X, Sparkles, Bot, User, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Send,
+  X,
+  Sparkles,
+  Bot,
+  User,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
+  Mic,
+  MicOff,
+} from 'lucide-react';
 import type { UIMessage } from '@ai-sdk/react';
+import { useSpeechToText } from '@/hooks/use-speech-to-text';
 
 interface FlowAIChatPanelProps {
   messages: UIMessage[];
@@ -26,6 +38,20 @@ export function FlowAIChatPanel({
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Speech-to-text hook
+  const {
+    isListening,
+    isSupported: isSpeechSupported,
+    error: speechError,
+    toggleListening,
+  } = useSpeechToText({
+    onResult: (transcript) => {
+      setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    },
+    continuous: false,
+    interimResults: true,
+  });
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -232,17 +258,39 @@ export function FlowAIChatPanel({
 
           {/* Input */}
           <form onSubmit={handleSubmit} className="p-4 border-t border-slate-100">
+            {speechError && (
+              <div className="mb-2 text-xs text-red-500 bg-red-50 px-3 py-1.5 rounded-lg">
+                {speechError}
+              </div>
+            )}
             <div className="flex gap-2">
               <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Describe what you want to build..."
-                className="flex-1 resize-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-h-[44px] max-h-[120px]"
+                placeholder={isListening ? 'Listening...' : 'Describe what you want to build...'}
+                className={`flex-1 resize-none rounded-xl border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-h-[44px] max-h-[120px] ${
+                  isListening ? 'border-red-300 bg-red-50' : 'border-slate-200'
+                }`}
                 rows={1}
                 disabled={status === 'streaming'}
               />
+              {isSpeechSupported && (
+                <button
+                  type="button"
+                  onClick={toggleListening}
+                  disabled={status === 'streaming'}
+                  className={`w-11 h-11 rounded-xl transition-all flex items-center justify-center flex-shrink-0 ${
+                    isListening
+                      ? 'bg-red-500 text-white hover:bg-red-600 animate-pulse'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  title={isListening ? 'Stop listening' : 'Start voice input'}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+              )}
               <button
                 type="submit"
                 disabled={!input.trim() || status !== 'ready'}
@@ -252,7 +300,9 @@ export function FlowAIChatPanel({
               </button>
             </div>
             <p className="text-[10px] text-slate-400 mt-2 text-center">
-              Press Enter to send, Shift+Enter for new line
+              {isSpeechSupported
+                ? 'Press Enter to send • Shift+Enter for new line • Click mic to speak'
+                : 'Press Enter to send, Shift+Enter for new line'}
             </p>
           </form>
         </>
