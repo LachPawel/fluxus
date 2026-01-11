@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { CategorySection } from './category-section';
-import { NodeDefinition } from '@/lib/nodes';
+import type { NodeDefinition } from '@/lib/nodes';
 
 // Mock child components
 vi.mock('@/components/common/dynamic-icon', () => ({

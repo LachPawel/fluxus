@@ -4,7 +4,7 @@ import { NodeEditor } from './node-editor';
 
 // Mock dependencies
 vi.mock('@/lib/nodes', async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<typeof import('@/lib/nodes')>();
   return {
     ...actual,
     getNodeDef: (type: string) => {

@@ -1,8 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { FlowNode } from './flow-node';
-import { NodeProps, Handle, Position } from '@xyflow/react';
-import { FlowNodeData } from '@/lib/nodes';
 
 // Mock dependencies
 vi.mock('@xyflow/react', () => ({
@@ -28,7 +26,7 @@ vi.mock('./flow/node-body', () => ({
 
 // Mock simple node definitions for the test
 vi.mock('@/lib/nodes', async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<typeof import('@/lib/nodes')>();
   return {
     ...actual,
     getNodeDef: (type: string) => {

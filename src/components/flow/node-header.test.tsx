@@ -3,8 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { NodeHeader } from './node-header';
 
 // Mock DynamicIcon to simplify testing
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DynamicIconProps } from '../common/dynamic-icon';
 
 // We need to mock the DynamicIcon because it imports lucide-react which relies on a lot of things
 // But wait, the previous test for DynamicIcon worked fine. I can probably just let it render.

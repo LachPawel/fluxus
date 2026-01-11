@@ -13,7 +13,7 @@ vi.mock('@/lib/nodes', () => ({
 }));
 
 vi.mock('./palette/category-section', () => ({
-  CategorySection: ({ category, isExpanded, onToggle, onDragStart, nodes }: any) => (
+  CategorySection: ({ category, isExpanded, onToggle, nodes }: any) => (
     <div data-testid={`category-${category}`}>
       <button onClick={onToggle}>{category}</button>
       {isExpanded && (

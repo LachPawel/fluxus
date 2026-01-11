@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { NodeBody } from './node-body';
-import { NodeDefinition } from '@/lib/nodes';
+import type { NodeDefinition } from '@/lib/nodes';
 
 describe('NodeBody', () => {
   const mockNodeDef: NodeDefinition = {
