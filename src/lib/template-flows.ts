@@ -34,7 +34,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'campaign-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Campaign Keyword Detector',
@@ -45,7 +45,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'campaign-check',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Active Campaign Check',
@@ -57,7 +57,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'campaign-enrich',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Enrich with Campaign Context',
@@ -68,7 +68,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'campaign-fallback',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'No Active Campaign Response',
@@ -116,7 +116,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'ooo-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'OOO Pattern Detector',
@@ -128,7 +128,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'ooo-check',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Confirm OOO Pattern',
@@ -140,7 +140,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'ooo-block',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Block Response (Silent)',
@@ -151,7 +151,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'ooo-continue',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Continue Normal Flow',
@@ -198,7 +198,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'formality-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Incoming Message',
@@ -209,7 +209,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'formality-detect-user',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'User Uses Formal (Sie)',
@@ -221,7 +221,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'formality-set-formal',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Set Formal Mode',
@@ -232,7 +232,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'formality-set-informal',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Set Informal Mode',
@@ -280,7 +280,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Outgoing Message Check',
@@ -291,7 +291,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-check',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Exceeds 500 Characters',
@@ -303,7 +303,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-truncate',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Truncate with Summary',
@@ -314,7 +314,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-pass',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Pass Through',
@@ -324,7 +324,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-continue-check',
         type: 'condition_branch',
-        position: { x: 100, y: 550 },
+        position: { x: 100, y: 800 },
         data: {
           type: 'condition_branch',
           label: 'User Wants More',
@@ -336,7 +336,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'length-send-continuation',
         type: 'action_message',
-        position: { x: 100, y: 720 },
+        position: { x: 100, y: 1050 },
         data: {
           type: 'action_message',
           label: 'Send Continuation',
@@ -397,7 +397,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Raffle Entry Detector',
@@ -408,7 +408,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-state-check',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Raffle In Progress',
@@ -420,7 +420,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-defer',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Defer Bot Response',
@@ -431,7 +431,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-start',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Start Raffle Participation',
@@ -442,7 +442,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-complete',
         type: 'trigger_keyword',
-        position: { x: 400, y: 550 },
+        position: { x: 700, y: 800 },
         data: {
           type: 'trigger_keyword',
           label: 'Raffle Completion Detector',
@@ -453,7 +453,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'raffle-resume',
         type: 'action_message',
-        position: { x: 400, y: 720 },
+        position: { x: 700, y: 1050 },
         data: {
           type: 'action_message',
           label: 'Resume Normal Operations',
@@ -515,7 +515,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Incoming Message',
@@ -526,7 +526,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-check',
         type: 'condition_branch',
-        position: { x: 250, y: 200 },
+        position: { x: 400, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Human Agent Active',
@@ -538,7 +538,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-block',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Block Bot Response',
@@ -549,7 +549,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-timeout-check',
         type: 'condition_branch',
-        position: { x: 100, y: 550 },
+        position: { x: 100, y: 800 },
         data: {
           type: 'condition_branch',
           label: 'Agent Timeout (15 min)',
@@ -561,7 +561,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-auto-resume',
         type: 'action_message',
-        position: { x: 100, y: 720 },
+        position: { x: 100, y: 1050 },
         data: {
           type: 'action_message',
           label: 'Auto-Resume Bot',
@@ -572,7 +572,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-continue',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Process with Bot',
@@ -582,7 +582,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-handoff-detect',
         type: 'trigger_keyword',
-        position: { x: 550, y: 200 },
+        position: { x: 1000, y: 300 },
         data: {
           type: 'trigger_keyword',
           label: 'Agent Handoff Detector',
@@ -593,7 +593,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'agent-activate',
         type: 'action_message',
-        position: { x: 550, y: 380 },
+        position: { x: 1000, y: 550 },
         data: {
           type: 'action_message',
           label: 'Activate Agent Mode',
@@ -662,7 +662,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'User Response',
@@ -673,7 +673,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-extract-name',
         type: 'condition_branch',
-        position: { x: 100, y: 200 },
+        position: { x: 100, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Name Provided',
@@ -685,7 +685,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-store-name',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Store Name',
@@ -696,7 +696,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-extract-email',
         type: 'condition_branch',
-        position: { x: 400, y: 200 },
+        position: { x: 700, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Email Provided',
@@ -708,7 +708,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-store-email',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Store Email',
@@ -719,7 +719,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'repeat-filter-output',
         type: 'action_message',
-        position: { x: 250, y: 550 },
+        position: { x: 400, y: 800 },
         data: {
           type: 'action_message',
           label: 'Filter Bot Output',
@@ -788,7 +788,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-trigger',
         type: 'trigger_keyword',
-        position: { x: 250, y: 50 },
+        position: { x: 400, y: 50 },
         data: {
           type: 'trigger_keyword',
           label: 'Bot Response Check',
@@ -799,7 +799,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-check-uncertainty',
         type: 'condition_branch',
-        position: { x: 100, y: 200 },
+        position: { x: 100, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Contains Uncertainty Markers',
@@ -812,7 +812,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-check-specifics',
         type: 'condition_branch',
-        position: { x: 400, y: 200 },
+        position: { x: 700, y: 300 },
         data: {
           type: 'condition_branch',
           label: 'Contains Specific Claims',
@@ -824,7 +824,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-flag-review',
         type: 'action_message',
-        position: { x: 100, y: 380 },
+        position: { x: 100, y: 550 },
         data: {
           type: 'action_message',
           label: 'Flag for Review (Low Confidence)',
@@ -835,7 +835,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-verify-facts',
         type: 'action_message',
-        position: { x: 400, y: 380 },
+        position: { x: 700, y: 550 },
         data: {
           type: 'action_message',
           label: 'Verify Against Knowledge Base',
@@ -846,7 +846,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-check-verified',
         type: 'condition_branch',
-        position: { x: 400, y: 550 },
+        position: { x: 700, y: 800 },
         data: {
           type: 'condition_branch',
           label: 'Verified in KB',
@@ -858,7 +858,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-send-verified',
         type: 'action_message',
-        position: { x: 250, y: 720 },
+        position: { x: 400, y: 1050 },
         data: {
           type: 'action_message',
           label: 'Send Verified Response',
@@ -868,7 +868,7 @@ export const TEMPLATE_FLOWS: TemplateFlow[] = [
       {
         id: 'fab-flag-fabrication',
         type: 'action_message',
-        position: { x: 550, y: 720 },
+        position: { x: 1000, y: 1050 },
         data: {
           type: 'action_message',
           label: 'Flag Potential Fabrication',

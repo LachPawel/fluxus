@@ -279,10 +279,6 @@ export function FlowCanvas() {
         return {
           ...node,
           id: newId,
-          position: {
-            x: node.position.x + 100,
-            y: node.position.y + 100,
-          },
         };
       });
 
@@ -293,8 +289,10 @@ export function FlowCanvas() {
         target: idMap.get(edge.target) || edge.target,
       }));
 
-      setNodes((nds) => [...nds, ...newNodes]);
-      setEdges((eds) => [...eds, ...newEdges]);
+      // Clear existing flow and load template
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setSelectedNodeId(null);
       setShowTemplatePicker(false);
 
       // Fit view after loading
