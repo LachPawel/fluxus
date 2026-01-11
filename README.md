@@ -1,5 +1,9 @@
 # Fluxus
 
+<p align="center">
+  <img src="public/fluxus-logo.svg" alt="Fluxus Logo" width="120" height="120">
+</p>
+
 ![CI](https://github.com/LachPawel/fluxus/actions/workflows/ci.yml/badge.svg)
 
 Fluxus is a modern, visual flow builder application designed to create and manage complex workflows with ease. Built with **Next.js**, **React**, **TypeScript**, and **React Flow**, it offers a powerful and intuitive node-based interface.
