@@ -33,14 +33,11 @@ export function CategorySection({
       >
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-lg ${colors.bg}`}>
-            <DynamicIcon
-              name={CATEGORY_ICONS[category]}
-              className={`w-4 h-4 ${colors.text}`}
-            />
+            <DynamicIcon name={CATEGORY_ICONS[category]} className={`w-4 h-4 ${colors.text}`} />
           </div>
           <span className="text-sm font-semibold text-slate-700">{CATEGORY_LABELS[category]}</span>
         </div>
-        <LucideIcons.ChevronDown 
+        <LucideIcons.ChevronDown
           className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
         />
       </button>

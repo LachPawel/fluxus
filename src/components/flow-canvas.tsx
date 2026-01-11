@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, type ComponentType } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -14,17 +14,19 @@ import {
   type OnEdgesChange,
   type OnConnect,
   type NodeMouseHandler,
+  type NodeProps,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { NodePalette } from '@/components/node-palette';
 import { NodeEditor } from '@/components/node-editor';
-import { createNodeTypes } from '@/components/flow-node';
+import { FlowNode } from '@/components/flow-node';
 import {
   getNodeDef,
   createNodeData,
+  getAllNodes,
   type FlowNodeData,
-  type FlowNode,
+  type FlowNode as FlowNodeType,
 } from '@/lib/nodes';
 import { initialNodes, initialEdges } from '@/lib/initial-data';
 import { getMiniMapNodeColor } from '@/utils/flow-utils';
@@ -37,7 +39,7 @@ import { SelectNodeIcon } from '@/components/icons/select-node-icon';
 
 export function FlowCanvas() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes] = useState<FlowNode[]>(initialNodes);
+  const [nodes, setNodes] = useState<FlowNodeType[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
@@ -45,12 +47,18 @@ export function FlowCanvas() {
   const theme = useFlowTheme();
 
   // Memoize node types
-  const nodeTypes = useMemo(() => createNodeTypes(), []);
+  const nodeTypes = useMemo(() => {
+    const types: Record<string, ComponentType<NodeProps>> = {};
+    for (const node of getAllNodes()) {
+      types[node.type] = FlowNode;
+    }
+    return types;
+  }, []);
 
   // Get selected node
   const selectedNode = useMemo(
     () => nodes.find((n) => n.id === selectedNodeId),
-    [nodes, selectedNodeId]
+    [nodes, selectedNodeId],
   );
 
   // ==========================================================================
@@ -90,40 +98,37 @@ export function FlowCanvas() {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const onDrop = useCallback(
-    (event: React.DragEvent) => {
-      event.preventDefault();
+  const onDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
 
-      const nodeType = event.dataTransfer.getData('application/reactflow');
-      if (!nodeType) return;
+    const nodeType = event.dataTransfer.getData('application/reactflow');
+    if (!nodeType) return;
 
-      const nodeDef = getNodeDef(nodeType);
-      if (!nodeDef) return;
+    const nodeDef = getNodeDef(nodeType);
+    if (!nodeDef) return;
 
-      // Get the position relative to the ReactFlow canvas
-      const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
-      if (!reactFlowBounds) return;
+    // Get the position relative to the ReactFlow canvas
+    const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+    if (!reactFlowBounds) return;
 
-      const position = {
-        x: event.clientX - reactFlowBounds.left - 100,
-        y: event.clientY - reactFlowBounds.top - 25,
-      };
+    const position = {
+      x: event.clientX - reactFlowBounds.left - 100,
+      y: event.clientY - reactFlowBounds.top - 25,
+    };
 
-      const nodeData = createNodeData(nodeType);
-      if (!nodeData) return;
+    const nodeData = createNodeData(nodeType);
+    if (!nodeData) return;
 
-      const newNode: FlowNode = {
-        id: `${nodeType}-${Date.now()}`,
-        type: nodeType,
-        position,
-        data: nodeData,
-      };
+    const newNode: FlowNode = {
+      id: `${nodeType}-${Date.now()}`,
+      type: nodeType,
+      position,
+      data: nodeData,
+    };
 
-      setNodes((nds) => [...nds, newNode]);
-      setSelectedNodeId(newNode.id);
-    },
-    []
-  );
+    setNodes((nds) => [...nds, newNode]);
+    setSelectedNodeId(newNode.id);
+  }, []);
 
   // ==========================================================================
   // Node Update/Delete Handlers
@@ -131,11 +136,7 @@ export function FlowCanvas() {
 
   const onNodeUpdate = useCallback((id: string, data: Partial<FlowNodeData>) => {
     setNodes((nds) =>
-      nds.map((node) =>
-        node.id === id
-          ? { ...node, data: { ...node.data, ...data } }
-          : node
-      )
+      nds.map((node) => (node.id === id ? { ...node, data: { ...node.data, ...data } } : node)),
     );
   }, []);
 
@@ -187,7 +188,7 @@ export function FlowCanvas() {
             size={1}
             color={theme.background.color}
           />
-          <Controls 
+          <Controls
             className="bg-white border border-slate-200 rounded-lg shadow-md p-1"
             style={{}} // Override default styles if necessary by passing empty object or specific overrides
           />

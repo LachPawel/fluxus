@@ -61,7 +61,18 @@ export interface Flow {
 // Category Colors
 // =============================================================================
 
-export const CATEGORY_COLORS: Record<NodeCategory, { bg: string; border: string; text: string; accent: string; bgHex: string; borderHex: string; textHex: string }> = {
+export const CATEGORY_COLORS: Record<
+  NodeCategory,
+  {
+    bg: string;
+    border: string;
+    text: string;
+    accent: string;
+    bgHex: string;
+    borderHex: string;
+    textHex: string;
+  }
+> = {
   trigger: {
     bg: 'bg-blue-50',
     border: 'border-blue-400',

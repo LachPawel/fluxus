@@ -2,12 +2,7 @@ import type { SVGProps } from 'react';
 
 export function SelectNodeIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      {...props}
-    >
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

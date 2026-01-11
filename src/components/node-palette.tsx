@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
-import {
-  getNodesByCategory,
-  getAllCategories,
-  type NodeCategory,
-} from '@/lib/nodes';
+import { getNodesByCategory, getAllCategories, type NodeCategory } from '@/lib/nodes';
 import { CategorySection } from './palette/category-section';
 
 // =============================================================================
@@ -22,7 +18,7 @@ interface NodePaletteProps {
 export function NodePalette({ onDragStart }: NodePaletteProps) {
   const categories = getAllCategories();
   const [expandedCategories, setExpandedCategories] = useState<Set<NodeCategory>>(
-    new Set(['trigger', 'action'])
+    new Set(['trigger', 'action']),
   );
 
   const toggleCategory = (category: NodeCategory) => {
@@ -54,9 +50,9 @@ export function NodePalette({ onDragStart }: NodePaletteProps) {
       <div className="px-5 py-4">
         <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50 rounded-lg border border-slate-200 group focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
           <LucideIcons.Search className="w-[18px] h-[18px] text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-          <input 
-            type="text" 
-            placeholder="Search nodes..." 
+          <input
+            type="text"
+            placeholder="Search nodes..."
             className="flex-1 text-sm bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-400"
           />
         </div>
