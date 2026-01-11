@@ -1,11 +1,6 @@
-import { memo, type ComponentType } from 'react';
+import { memo } from 'react';
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react';
-import {
-  getNodeDef,
-  getAllNodes,
-  CATEGORY_COLORS,
-  type FlowNodeData,
-} from '@/lib/nodes';
+import { getNodeDef, CATEGORY_COLORS, type FlowNodeData } from '@/lib/nodes';
 import { calculateHandlePosition } from '@/utils/flow-utils';
 import { NodeHeader } from './flow/node-header';
 import { NodeBody } from './flow/node-body';
@@ -19,13 +14,15 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
 
   if (!nodeDef) {
     return (
-      <div style={{ 
-        borderRadius: 12, 
-        backgroundColor: '#fef2f2', 
-        border: '2px solid #fca5a5', 
-        padding: 16, 
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
-      }}>
+      <div
+        style={{
+          borderRadius: 12,
+          backgroundColor: '#fef2f2',
+          border: '2px solid #fca5a5',
+          padding: 16,
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <span style={{ color: '#dc2626', fontSize: 14 }}>Unknown node: {data.type}</span>
       </div>
     );
@@ -37,8 +34,8 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
   return (
     <div
       className={`relative min-w-[240px] max-w-[300px] rounded-xl bg-white border-2 transition-all duration-200 ${
-        selected 
-          ? 'border-blue-500 shadow-[0_0_0_4px_#eff6ff,0_10px_15px_-3px_rgba(0,0,0,0.1)]' 
+        selected
+          ? 'border-blue-500 shadow-[0_0_0_4px_#eff6ff,0_10px_15px_-3px_rgba(0,0,0,0.1)]'
           : `${colors.border} shadow-md`
       }`}
     >
@@ -59,16 +56,9 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
           );
         })}
 
-      <NodeHeader 
-        label={data.label} 
-        icon={nodeDef.icon} 
-        category={nodeDef.category} 
-      />
+      <NodeHeader label={data.label} icon={nodeDef.icon} category={nodeDef.category} />
 
-      <NodeBody 
-        nodeDef={nodeDef} 
-        data={data} 
-      />
+      <NodeBody nodeDef={nodeDef} data={data} />
 
       {/* Output Handles - Single */}
       {nodeDef.outputs.length === 1 && (
@@ -109,21 +99,3 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
 // =============================================================================
 
 export const FlowNode = memo(FlowNodeComponent);
-
-// =============================================================================
-// Node Types Factory
-// =============================================================================
-
-/**
- * Creates a Record mapping all registered node types to the FlowNode component
- * Use this to pass to ReactFlow's nodeTypes prop
- */
-export function createNodeTypes(): Record<string, ComponentType<NodeProps<Node<FlowNodeData>>>> {
-  const nodeTypes: Record<string, ComponentType<NodeProps<Node<FlowNodeData>>>> = {};
-
-  for (const node of getAllNodes()) {
-    nodeTypes[node.type] = FlowNode;
-  }
-
-  return nodeTypes;
-}

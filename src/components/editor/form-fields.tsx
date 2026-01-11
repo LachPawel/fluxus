@@ -6,7 +6,8 @@ export interface FieldProps {
   onChange: (name: string, value: unknown) => void;
 }
 
-const inputClassName = "w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200";
+const inputClassName =
+  'w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200';
 
 export function TextField({ field, value, onChange }: FieldProps) {
   return (
@@ -72,7 +73,9 @@ export function BooleanField({ field, value, onChange }: FieldProps) {
         onChange={(e) => onChange(field.name, e.target.checked)}
         className="w-5 h-5 cursor-pointer rounded border-slate-300 accent-blue-600 focus:ring-2 focus:ring-blue-500/50"
       />
-      <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">Enabled</span>
+      <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">
+        Enabled
+      </span>
     </label>
   );
 }

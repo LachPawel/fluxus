@@ -1,9 +1,5 @@
 import * as LucideIcons from 'lucide-react';
-import {
-  getNodeDef,
-  CATEGORY_COLORS,
-  type FlowNodeData,
-} from '@/lib/nodes';
+import { getNodeDef, CATEGORY_COLORS, type FlowNodeData } from '@/lib/nodes';
 import { DynamicIcon } from '@/components/common/dynamic-icon';
 import { FormField } from './editor/form-fields';
 
@@ -57,7 +53,9 @@ export function NodeEditor({
   return (
     <div className="flex flex-col w-[340px] h-full bg-white border-l border-slate-200 shadow-xl z-20">
       {/* Header */}
-      <div className={`flex items-center justify-between px-5 py-4 border-b border-slate-200 ${colors.bg}`}>
+      <div
+        className={`flex items-center justify-between px-5 py-4 border-b border-slate-200 ${colors.bg}`}
+      >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-white shadow-sm">
             <DynamicIcon name={nodeDef.icon} className={`w-[18px] h-[18px] ${colors.text}`} />
@@ -92,9 +90,7 @@ export function NodeEditor({
 
       {/* Footer */}
       <div className="px-5 py-4 border-t border-slate-200 flex flex-col gap-3 bg-slate-50">
-        <button
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-sm shadow-blue-600/20"
-        >
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-sm shadow-blue-600/20">
           Save
         </button>
         <button

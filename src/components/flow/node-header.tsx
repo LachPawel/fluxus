@@ -13,7 +13,9 @@ export function NodeHeader({ label, icon, category }: NodeHeaderProps) {
   const colors = CATEGORY_COLORS[category];
 
   return (
-    <div className={`flex items-center justify-between px-4 py-3 gap-3 rounded-t-[10px] ${colors.bg}`}>
+    <div
+      className={`flex items-center justify-between px-4 py-3 gap-3 rounded-t-[10px] ${colors.bg}`}
+    >
       <div className="flex items-center gap-2.5">
         <div className="p-1.5 rounded-lg bg-white shadow-sm">
           <DynamicIcon name={icon} className={`w-[18px] h-[18px] ${colors.text}`} />
