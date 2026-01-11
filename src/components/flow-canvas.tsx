@@ -24,6 +24,8 @@ import '@xyflow/react/dist/style.css';
 import { NodePicker } from '@/components/flow/node-picker';
 import { NodeEditor } from '@/components/node-editor';
 import { FlowNode } from '@/components/flow-node';
+import { FlowAIChatPanel } from '@/components/ai/flow-ai-chat-panel';
+import { useFlowAIChat } from '@/hooks/use-flow-ai-chat';
 import {
   getNodeDef,
   createNodeData,
@@ -46,6 +48,9 @@ export function FlowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance<FlowNodeType, Edge> | null>(null);
+
+  // AI Chat integration
+  const aiChat = useFlowAIChat({ nodes, edges }, { setNodes, setEdges, setSelectedNodeId });
 
   // Connection handling
   const connectingNodeId = useRef<string | null>(null);
@@ -335,6 +340,16 @@ export function FlowCanvas() {
           </div>
         </div>
       )}
+
+      {/* AI Chat Panel */}
+      <FlowAIChatPanel
+        messages={aiChat.messages}
+        status={aiChat.status}
+        error={aiChat.error}
+        onSendMessage={aiChat.sendMessage}
+        onRegenerate={aiChat.regenerate}
+        onStop={aiChat.stop}
+      />
     </div>
   );
 }
