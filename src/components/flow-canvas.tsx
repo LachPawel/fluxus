@@ -29,6 +29,7 @@ import {
 import { initialNodes, initialEdges } from '@/lib/initial-data';
 import { getMiniMapNodeColor } from '@/utils/flow-utils';
 import { useFlowTheme } from '@/hooks/use-flow-theme';
+import { SelectNodeIcon } from '@/components/icons/select-node-icon';
 
 // =============================================================================
 // Flow Canvas Component
@@ -213,19 +214,7 @@ export function FlowCanvas() {
         <div className="w-[340px] flex flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
           <div className="text-center">
             <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-blue-50 rounded-full">
-              <svg
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                className="w-8 h-8 text-blue-500"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                />
-              </svg>
+              <SelectNodeIcon className="w-8 h-8 text-blue-500" />
             </div>
             <p className="text-[15px] font-semibold text-slate-700">Select a node to edit</p>
             <p className="text-sm mt-2 leading-relaxed text-slate-500">
