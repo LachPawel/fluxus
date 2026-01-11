@@ -15,10 +15,13 @@ import {
   type OnConnect,
   type NodeMouseHandler,
   type NodeProps,
+  type ReactFlowInstance,
+  type OnConnectStart,
+  type OnConnectEnd,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import { NodePalette } from '@/components/node-palette';
+import { NodePicker } from '@/components/flow/node-picker';
 import { NodeEditor } from '@/components/node-editor';
 import { FlowNode } from '@/components/flow-node';
 import {
@@ -42,6 +45,24 @@ export function FlowCanvas() {
   const [nodes, setNodes] = useState<FlowNodeType[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [rfInstance, setRfInstance] = useState<ReactFlowInstance<FlowNodeType, Edge> | null>(null);
+
+  // Connection handling
+  const connectingNodeId = useRef<string | null>(null);
+  const connectingHandleId = useRef<string | null>(null);
+  const [pickerState, setPickerState] = useState<{
+    visible: boolean;
+    position: { x: number; y: number };
+    flowPosition: { x: number; y: number };
+    sourceNodeId: string | null;
+    sourceHandleId: string | null;
+  }>({
+    visible: false,
+    position: { x: 0, y: 0 },
+    flowPosition: { x: 0, y: 0 },
+    sourceNodeId: null,
+    sourceHandleId: null,
+  });
 
   // Theme
   const theme = useFlowTheme();
@@ -73,8 +94,100 @@ export function FlowCanvas() {
     setEdges((eds) => applyEdgeChanges(changes, eds));
   }, []);
 
+  const onConnectStart: OnConnectStart = useCallback((_, { nodeId, handleId }) => {
+    connectingNodeId.current = nodeId;
+    connectingHandleId.current = handleId;
+  }, []);
+
+  const onConnectEnd: OnConnectEnd = useCallback(
+    (event) => {
+      if (!connectingNodeId.current) return;
+
+      const targetIsPane = (event.target as Element).classList.contains('react-flow__pane');
+
+      if (targetIsPane && rfInstance && reactFlowWrapper.current) {
+        // Stop default behavior
+        // event.preventDefault(); // Might not be needed or exist on all event types here
+
+        const { clientX, clientY } =
+          'changedTouches' in event
+            ? (event as TouchEvent).changedTouches[0]
+            : (event as MouseEvent);
+
+        // precise flow position
+        const flowPosition = rfInstance.screenToFlowPosition({ x: clientX, y: clientY });
+
+        // Menu position relative to container
+        const bounds = reactFlowWrapper.current.getBoundingClientRect();
+        const position = {
+          x: clientX - bounds.left,
+          y: clientY - bounds.top,
+        };
+
+        setPickerState({
+          visible: true,
+          position,
+          flowPosition,
+          sourceNodeId: connectingNodeId.current,
+          sourceHandleId: connectingHandleId.current,
+        });
+      }
+
+      // Reset after a short delay to allow click to process if needed,
+      // but actually we just keep the ref until we use it in the picker or start a new connection.
+      // Resetting here might be fine if we copied the data to state, which we did.
+      connectingNodeId.current = null;
+      connectingHandleId.current = null;
+    },
+    [rfInstance],
+  );
+
   const onConnect: OnConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
+  }, []);
+
+  const onPickerSelect = useCallback(
+    (nodeType: string) => {
+      const { flowPosition, sourceNodeId, sourceHandleId } = pickerState;
+
+      const nodeData = createNodeData(nodeType);
+      if (!nodeData) return;
+
+      const newNode: FlowNodeType = {
+        id: `${nodeType}-${Date.now()}`,
+        type: nodeType,
+        position: flowPosition,
+        data: nodeData,
+      };
+
+      setNodes((nds) => [...nds, newNode]);
+
+      if (sourceNodeId) {
+        // Try to find the default input handle for the new node
+        const nodeDef = getNodeDef(nodeType);
+        const targetHandle = nodeDef?.inputs[0]?.id || null;
+
+        setEdges((eds) =>
+          addEdge(
+            {
+              source: sourceNodeId,
+              target: newNode.id,
+              sourceHandle: sourceHandleId,
+              targetHandle,
+            },
+            eds,
+          ),
+        );
+      }
+
+      setPickerState((prev) => ({ ...prev, visible: false }));
+      setSelectedNodeId(newNode.id);
+    },
+    [pickerState],
+  );
+
+  const closePicker = useCallback(() => {
+    setPickerState((prev) => ({ ...prev, visible: false }));
   }, []);
 
   // ==========================================================================
@@ -87,48 +200,39 @@ export function FlowCanvas() {
 
   const onPaneClick = useCallback(() => {
     setSelectedNodeId(null);
+    setPickerState((prev) => ({ ...prev, visible: false }));
   }, []);
 
-  // ==========================================================================
-  // Drag & Drop Handlers
-  // ==========================================================================
+  const onPaneContextMenu = useCallback(
+    (event: React.MouseEvent | MouseEvent) => {
+      event.preventDefault();
 
-  const onDragOver = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-  }, []);
+      if (rfInstance && reactFlowWrapper.current) {
+        // Handle both React.MouseEvent and native MouseEvent
+        const clientX = (event as React.MouseEvent).clientX ?? (event as MouseEvent).clientX;
+        const clientY = (event as React.MouseEvent).clientY ?? (event as MouseEvent).clientY;
 
-  const onDrop = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
+        // precise flow position
+        const flowPosition = rfInstance.screenToFlowPosition({ x: clientX, y: clientY });
 
-    const nodeType = event.dataTransfer.getData('application/reactflow');
-    if (!nodeType) return;
+        // Menu position relative to container
+        const bounds = reactFlowWrapper.current.getBoundingClientRect();
+        const position = {
+          x: clientX - bounds.left,
+          y: clientY - bounds.top,
+        };
 
-    const nodeDef = getNodeDef(nodeType);
-    if (!nodeDef) return;
-
-    // Get the position relative to the ReactFlow canvas
-    const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
-    if (!reactFlowBounds) return;
-
-    const position = {
-      x: event.clientX - reactFlowBounds.left - 100,
-      y: event.clientY - reactFlowBounds.top - 25,
-    };
-
-    const nodeData = createNodeData(nodeType);
-    if (!nodeData) return;
-
-    const newNode: FlowNodeType = {
-      id: `${nodeType}-${Date.now()}`,
-      type: nodeType,
-      position,
-      data: nodeData,
-    };
-
-    setNodes((nds) => [...nds, newNode]);
-    setSelectedNodeId(newNode.id);
-  }, []);
+        setPickerState({
+          visible: true,
+          position,
+          flowPosition,
+          sourceNodeId: null,
+          sourceHandleId: null,
+        });
+      }
+    },
+    [rfInstance],
+  );
 
   // ==========================================================================
   // Node Update/Delete Handlers
@@ -156,22 +260,21 @@ export function FlowCanvas() {
 
   return (
     <div className="flex w-screen h-screen bg-slate-50 overflow-hidden">
-      {/* Node Palette - Left Sidebar */}
-      <NodePalette />
-
       {/* Flow Canvas - Center */}
       <div ref={reactFlowWrapper} className="flex-1 h-full relative">
-        <ReactFlow
+        <ReactFlow<FlowNodeType, Edge>
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          onConnectStart={onConnectStart}
+          onConnectEnd={onConnectEnd}
           onNodeClick={onNodeClick}
           onPaneClick={onPaneClick}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
+          onPaneContextMenu={onPaneContextMenu}
+          onInit={setRfInstance}
           fitView
           snapToGrid
           snapGrid={[16, 16]}
@@ -199,6 +302,14 @@ export function FlowCanvas() {
             style={{}}
           />
         </ReactFlow>
+
+        {pickerState.visible && (
+          <NodePicker
+            position={pickerState.position}
+            onSelect={onPickerSelect}
+            onClose={closePicker}
+          />
+        )}
       </div>
 
       {/* Node Editor - Right Sidebar */}
