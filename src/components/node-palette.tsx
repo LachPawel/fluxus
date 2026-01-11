@@ -38,66 +38,32 @@ export function NodePalette({ onDragStart }: NodePaletteProps) {
   };
 
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        width: 280, 
-        height: '100%',
-        backgroundColor: '#ffffff',
-        borderRight: '1px solid #e2e8f0'
-      }}
-    >
+    <div className="flex flex-col w-[280px] h-full bg-white border-r border-slate-200">
       {/* Header */}
-      <div 
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: 12, 
-          padding: '16px 20px',
-          borderBottom: '1px solid #e2e8f0'
-        }}
-      >
-        <div style={{ padding: 10, borderRadius: 8, backgroundColor: '#eff6ff' }}>
-          <LucideIcons.Workflow style={{ width: 22, height: 22, color: '#2563eb' }} />
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200">
+        <div className="p-2.5 rounded-lg bg-blue-50">
+          <LucideIcons.Workflow className="w-[22px] h-[22px] text-blue-600" />
         </div>
         <div>
-          <h1 style={{ fontSize: 16, marginBottom: 2, fontWeight: 700, color: '#1e293b' }}>Fluxus</h1>
-          <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>Flow Builder</p>
+          <h1 className="text-base font-bold text-slate-800 mb-0.5">Fluxus</h1>
+          <p className="text-xs text-slate-500 m-0">Flow Builder</p>
         </div>
       </div>
 
       {/* Search */}
-      <div style={{ padding: '16px 20px' }}>
-        <div 
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 10, 
-            padding: '10px 14px',
-            backgroundColor: '#f8fafc',
-            borderRadius: 8,
-            border: '1px solid #e2e8f0'
-          }}
-        >
-          <LucideIcons.Search style={{ width: 18, height: 18, color: '#94a3b8' }} />
+      <div className="px-5 py-4">
+        <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50 rounded-lg border border-slate-200 group focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+          <LucideIcons.Search className="w-[18px] h-[18px] text-slate-400 group-focus-within:text-blue-500 transition-colors" />
           <input 
             type="text" 
             placeholder="Search nodes..." 
-            style={{ 
-              flex: 1, 
-              fontSize: 14, 
-              border: 'none', 
-              backgroundColor: 'transparent', 
-              outline: 'none', 
-              color: '#334155' 
-            }}
+            className="flex-1 text-sm bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-400"
           />
         </div>
       </div>
 
       {/* Category Sections */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 20px 20px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="flex-1 overflow-y-auto px-5 py-2 flex flex-col gap-4 pb-5">
         {categories.map((category) => (
           <CategorySection
             key={category}

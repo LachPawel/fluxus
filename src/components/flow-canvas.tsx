@@ -26,45 +26,8 @@ import {
   type FlowNodeData,
   type FlowNode,
 } from '@/lib/nodes';
+import { initialNodes, initialEdges } from '@/lib/initial-data';
 import { getMiniMapNodeColor } from '@/utils/flow-utils';
-
-// =============================================================================
-// Initial Data
-// =============================================================================
-
-const initialNodes: FlowNode[] = [
-  {
-    id: 'trigger-1',
-    type: 'trigger_keyword',
-    position: { x: 250, y: 100 },
-    data: {
-      type: 'trigger_keyword',
-      label: 'Keyword Trigger',
-      keywords: 'hello, hi, start',
-      matchType: 'contains',
-    },
-  },
-  {
-    id: 'action-1',
-    type: 'action_message',
-    position: { x: 250, y: 300 },
-    data: {
-      type: 'action_message',
-      label: 'Send Message',
-      message: 'Hello! Welcome to our WhatsApp bot. How can I help you today?',
-    },
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'e-trigger-action',
-    source: 'trigger-1',
-    sourceHandle: 'triggered',
-    target: 'action-1',
-    targetHandle: 'in',
-  },
-];
 
 // =============================================================================
 // Flow Canvas Component
@@ -186,12 +149,12 @@ export function FlowCanvas() {
   // ==========================================================================
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
+    <div className="flex w-screen h-screen bg-slate-50 overflow-hidden">
       {/* Node Palette - Left Sidebar */}
       <NodePalette />
 
       {/* Flow Canvas - Center */}
-      <div ref={reactFlowWrapper} style={{ flex: 1, height: '100%', position: 'relative' }}>
+      <div ref={reactFlowWrapper} className="flex-1 h-full relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -220,23 +183,14 @@ export function FlowCanvas() {
             color="#cbd5e1"
           />
           <Controls 
-            style={{ 
-              backgroundColor: '#ffffff', 
-              border: '1px solid #e2e8f0', 
-              borderRadius: 8, 
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              padding: 4
-            }}
+            className="bg-white border border-slate-200 rounded-lg shadow-md p-1"
+            style={{}} // Override default styles if necessary by passing empty object or specific overrides
           />
           <MiniMap
             nodeColor={getMiniMapNodeColor}
             maskColor="rgba(248, 250, 252, 0.8)"
-            style={{
-              backgroundColor: '#ffffff',
-              border: '1px solid #e2e8f0',
-              borderRadius: 8,
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }}
+            className="bg-white border border-slate-200 rounded-lg shadow-md"
+            style={{}}
           />
         </ReactFlow>
       </div>
@@ -252,36 +206,14 @@ export function FlowCanvas() {
           onClose={onEditorClose}
         />
       ) : (
-        <div 
-          style={{ 
-            width: 340, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            padding: 32,
-            backgroundColor: '#ffffff',
-            borderLeft: '1px solid #e2e8f0'
-          }}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <div 
-              style={{ 
-                width: 72, 
-                height: 72, 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                margin: '0 auto 20px auto',
-                backgroundColor: '#eff6ff',
-                borderRadius: '50%'
-              }}
-            >
+        <div className="w-[340px] flex flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
+          <div className="text-center">
+            <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-blue-50 rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                style={{ width: 32, height: 32, color: '#3b82f6' }}
+                className="w-8 h-8 text-blue-500"
               >
                 <path
                   strokeLinecap="round"
@@ -291,8 +223,8 @@ export function FlowCanvas() {
                 />
               </svg>
             </div>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#334155' }}>Select a node to edit</p>
-            <p style={{ fontSize: 14, marginTop: 8, lineHeight: 1.5, color: '#64748b' }}>
+            <p className="text-[15px] font-semibold text-slate-700">Select a node to edit</p>
+            <p className="text-sm mt-2 leading-relaxed text-slate-500">
               or drag a node from the palette
             </p>
           </div>

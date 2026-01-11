@@ -22,31 +22,13 @@ export function PaletteItem({ node, onDragStart }: PaletteItemProps) {
       draggable
       onDragStart={handleDragStart}
       title={node.description}
-      style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 12, 
-        padding: '10px 14px', 
-        width: '100%',
-        backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: 8,
-        cursor: 'grab',
-        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        transition: 'all 200ms',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = '#f8fafc';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = '#ffffff';
-      }}
+      className="flex items-center gap-3 px-3.5 py-2.5 w-full bg-white border border-slate-200 rounded-lg shadow-sm cursor-grab transition-all duration-200 hover:bg-slate-50"
     >
-      <div style={{ padding: 8, borderRadius: 8, backgroundColor: colors.bgHex }}>
-        <DynamicIcon name={node.icon} style={{ width: 16, height: 16, color: colors.textHex }} />
+      <div className={`p-2 rounded-lg ${colors.bg}`}>
+        <DynamicIcon name={node.icon} className={`w-4 h-4 ${colors.text}`} />
       </div>
-      <span style={{ fontSize: 14, flex: 1, fontWeight: 500, color: '#334155' }}>{node.label}</span>
-      <LucideIcons.ArrowRight style={{ width: 16, height: 16, color: '#94a3b8' }} />
+      <span className="text-sm flex-1 font-medium text-slate-700">{node.label}</span>
+      <LucideIcons.ArrowRight className="w-4 h-4 text-slate-400" />
     </div>
   );
 }

@@ -25,52 +25,29 @@ export function CategorySection({
   if (nodes.length === 0) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col gap-2">
       {/* Category Toggle Button */}
       <button
         onClick={onToggle}
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          width: '100%', 
-          padding: '12px 14px',
-          backgroundColor: isExpanded ? '#f1f5f9' : '#ffffff',
-          borderRadius: 8,
-          border: 'none',
-          cursor: 'pointer',
-          transition: 'all 200ms',
-        }}
-        onMouseEnter={(e) => {
-          if (!isExpanded) e.currentTarget.style.backgroundColor = '#f1f5f9';
-        }}
-        onMouseLeave={(e) => {
-           if (!isExpanded) e.currentTarget.style.backgroundColor = '#ffffff';
-        }}
+        className={`flex items-center justify-between w-full px-3.5 py-3 rounded-lg border-none cursor-pointer transition-all duration-200 ${isExpanded ? 'bg-slate-100' : 'bg-white hover:bg-slate-100'}`}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ padding: 8, borderRadius: 8, backgroundColor: colors.bgHex }}>
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-lg ${colors.bg}`}>
             <DynamicIcon
               name={CATEGORY_ICONS[category]}
-              style={{ width: 16, height: 16, color: colors.textHex }}
+              className={`w-4 h-4 ${colors.text}`}
             />
           </div>
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#334155' }}>{CATEGORY_LABELS[category]}</span>
+          <span className="text-sm font-semibold text-slate-700">{CATEGORY_LABELS[category]}</span>
         </div>
         <LucideIcons.ChevronDown 
-          style={{ 
-            width: 16, 
-            height: 16, 
-            color: '#94a3b8',
-            transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 200ms'
-          }}
+          className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
         />
       </button>
 
       {/* Expanded Node Items */}
       {isExpanded && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8, paddingLeft: 8 }}>
+        <div className="flex flex-col gap-2 pl-2">
           {nodes.map((node) => (
             <PaletteItem key={node.type} node={node} onDragStart={onDragStart} />
           ))}

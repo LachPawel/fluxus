@@ -6,6 +6,8 @@ export interface FieldProps {
   onChange: (name: string, value: unknown) => void;
 }
 
+const inputClassName = "w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200";
+
 export function TextField({ field, value, onChange }: FieldProps) {
   return (
     <input
@@ -13,24 +15,7 @@ export function TextField({ field, value, onChange }: FieldProps) {
       value={String(value ?? '')}
       onChange={(e) => onChange(field.name, e.target.value)}
       placeholder={field.placeholder}
-      style={{ 
-        width: '100%', 
-        padding: '12px 16px', 
-        fontSize: 14,
-        backgroundColor: '#f8fafc',
-        border: '1px solid #e2e8f0',
-        borderRadius: 8,
-        color: '#1e293b',
-        outline: 'none',
-      }}
-      onFocus={(e) => {
-        e.target.style.borderColor = '#3b82f6';
-        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-      }}
-      onBlur={(e) => {
-        e.target.style.borderColor = '#e2e8f0';
-        e.target.style.boxShadow = 'none';
-      }}
+      className={inputClassName}
     />
   );
 }
@@ -42,26 +27,7 @@ export function TextareaField({ field, value, onChange }: FieldProps) {
       onChange={(e) => onChange(field.name, e.target.value)}
       placeholder={field.placeholder}
       rows={4}
-      style={{ 
-        width: '100%', 
-        padding: '12px 16px', 
-        fontSize: 14, 
-        lineHeight: 1.6, 
-        resize: 'none',
-        backgroundColor: '#f8fafc',
-        border: '1px solid #e2e8f0',
-        borderRadius: 8,
-        color: '#1e293b',
-        outline: 'none',
-      }}
-      onFocus={(e) => {
-        e.target.style.borderColor = '#3b82f6';
-        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-      }}
-      onBlur={(e) => {
-        e.target.style.borderColor = '#e2e8f0';
-        e.target.style.boxShadow = 'none';
-      }}
+      className={`${inputClassName} resize-none leading-relaxed`}
     />
   );
 }
@@ -71,25 +37,7 @@ export function SelectField({ field, value, onChange }: FieldProps) {
     <select
       value={String(value ?? field.defaultValue ?? '')}
       onChange={(e) => onChange(field.name, e.target.value)}
-      style={{ 
-        width: '100%', 
-        padding: '12px 16px', 
-        fontSize: 14,
-        backgroundColor: '#f8fafc',
-        border: '1px solid #e2e8f0',
-        borderRadius: 8,
-        color: '#1e293b',
-        outline: 'none',
-        appearance: 'none',
-      }}
-      onFocus={(e) => {
-        e.target.style.borderColor = '#3b82f6';
-        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-      }}
-      onBlur={(e) => {
-        e.target.style.borderColor = '#e2e8f0';
-        e.target.style.boxShadow = 'none';
-      }}
+      className={`${inputClassName} appearance-none cursor-pointer`}
     >
       <option value="" disabled>
         Select...
@@ -110,38 +58,21 @@ export function NumberField({ field, value, onChange }: FieldProps) {
       value={value !== undefined && value !== null ? Number(value) : ''}
       onChange={(e) => onChange(field.name, e.target.value ? Number(e.target.value) : null)}
       placeholder={field.placeholder}
-      style={{ 
-        width: '100%', 
-        padding: '12px 16px', 
-        fontSize: 14,
-        backgroundColor: '#f8fafc',
-        border: '1px solid #e2e8f0',
-        borderRadius: 8,
-        color: '#1e293b',
-        outline: 'none',
-      }}
-      onFocus={(e) => {
-        e.target.style.borderColor = '#3b82f6';
-        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-      }}
-      onBlur={(e) => {
-        e.target.style.borderColor = '#e2e8f0';
-        e.target.style.boxShadow = 'none';
-      }}
+      className={inputClassName}
     />
   );
 }
 
 export function BooleanField({ field, value, onChange }: FieldProps) {
   return (
-    <label style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '4px 0', cursor: 'pointer' }}>
+    <label className="flex items-center gap-3 py-1 cursor-pointer select-none group">
       <input
         type="checkbox"
         checked={Boolean(value)}
         onChange={(e) => onChange(field.name, e.target.checked)}
-        style={{ width: 20, height: 20, cursor: 'pointer' }}
+        className="w-5 h-5 cursor-pointer rounded border-slate-300 accent-blue-600 focus:ring-2 focus:ring-blue-500/50"
       />
-      <span style={{ fontSize: 14, color: '#334155' }}>Enabled</span>
+      <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">Enabled</span>
     </label>
   );
 }
@@ -165,10 +96,10 @@ export function FormField({ field, value, onChange }: FieldProps) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 500, color: '#334155' }}>
+    <div className="flex flex-col gap-2.5">
+      <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
         {field.label}
-        {field.required && <span style={{ color: '#ef4444' }}>*</span>}
+        {field.required && <span className="text-red-500">*</span>}
       </label>
       {renderField()}
     </div>

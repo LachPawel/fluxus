@@ -36,18 +36,11 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
 
   return (
     <div
-      style={{
-        minWidth: 240,
-        maxWidth: 300,
-        borderRadius: 12,
-        backgroundColor: '#ffffff',
-        border: `2px solid ${selected ? '#3b82f6' : colors.borderHex}`,
-        boxShadow: selected 
-          ? '0 0 0 4px #eff6ff, 0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
-          : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        transition: 'all 200ms ease',
-        position: 'relative'
-      }}
+      className={`relative min-w-[240px] max-w-[300px] rounded-xl bg-white border-2 transition-all duration-200 ${
+        selected 
+          ? 'border-blue-500 shadow-[0_0_0_4px_#eff6ff,0_10px_15px_-3px_rgba(0,0,0,0.1)]' 
+          : `${colors.border} shadow-md`
+      }`}
     >
       {/* Input Handles */}
       {hasInputs &&
@@ -59,14 +52,8 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
               type="target"
               position={Position.Left}
               id={input.id}
-              style={{ 
-                top: `${topPosition}%`,
-                width: 12,
-                height: 12,
-                backgroundColor: '#ffffff',
-                border: '2px solid #cbd5e1',
-                zIndex: 10
-              }}
+              style={{ top: `${topPosition}%` }}
+              className="!w-3 !h-3 !bg-white !border-2 !border-slate-300 !z-10"
               title={input.label}
             />
           );
@@ -89,40 +76,24 @@ function FlowNodeComponent({ data, selected }: NodeProps<Node<FlowNodeData>>) {
           type="source"
           position={Position.Right}
           id={nodeDef.outputs[0].id}
-          style={{ 
-            top: '50%',
-            right: -6, // React Flow default offset is usually fine but let's be explicit if needed
-            width: 12,
-            height: 12,
-            backgroundColor: '#ffffff',
-            border: '2px solid #cbd5e1',
-            zIndex: 10
-          }}
+          style={{ top: '50%' }}
+          className="!w-3 !h-3 !bg-white !border-2 !border-slate-300 !z-10 !-right-[8px]" // Adjusted right position via class or style? ReactFlow handles have default styles.
           title={nodeDef.outputs[0].label}
         />
       )}
 
       {/* Multiple outputs with labels */}
       {nodeDef.outputs.length > 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '0 16px 16px 16px' }}>
+        <div className="flex flex-col gap-2 px-4 pb-4">
           {nodeDef.outputs.map((output) => (
-            <div key={output.id} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-              <span style={{ fontSize: 12, color: '#64748b', marginRight: 12, fontWeight: 500 }}>{output.label}</span>
+            <div key={output.id} className="relative flex items-center justify-end">
+              <span className="text-xs text-slate-500 mr-3 font-medium">{output.label}</span>
               <Handle
                 type="source"
                 position={Position.Right}
                 id={output.id}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  right: -22,
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#ffffff',
-                  border: '2px solid #cbd5e1',
-                  zIndex: 10,
-                  transform: 'translateY(-50%)'
-                }}
+                style={{ top: '50%', transform: 'translateY(-50%)' }}
+                className="!absolute !-right-[24px] !w-3 !h-3 !bg-white !border-2 !border-slate-300 !z-10"
                 title={output.label}
               />
             </div>

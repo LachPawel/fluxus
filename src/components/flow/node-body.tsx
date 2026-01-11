@@ -11,65 +11,36 @@ export function NodeBody({ nodeDef, data }: NodeBodyProps) {
   const colors = CATEGORY_COLORS[nodeDef.category];
 
   return (
-    <div style={{ padding: '16px 16px 20px 16px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div className="p-4 pb-5">
+      <div className="flex flex-col gap-4">
         {nodeDef.fields.slice(0, 2).map((field) => {
           const value = data[field.name];
           if (!value) return null;
           
           return (
-            <div key={field.name} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <label 
-                style={{ 
-                  fontSize: 11, 
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  color: '#64748b',
-                  fontWeight: 500
-                }}
-              >
+            <div key={field.name} className="flex flex-col gap-2">
+              <label className="text-[11px] tracking-wider uppercase font-medium text-slate-500">
                 {field.label}
               </label>
               {field.type === 'select' ? (
-                <div 
-                  style={{ 
-                    padding: '10px 14px',
-                    borderRadius: 8,
-                    backgroundColor: '#f8fafc',
-                    border: '1px solid #e2e8f0',
-                  }}
-                >
-                  <span style={{ fontSize: 14, color: '#334155' }}>
+                <div className="px-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <span className="text-sm text-slate-700">
                     {getSelectLabel(field, value)}
                   </span>
                 </div>
               ) : field.name === 'keywords' ? (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <div className="flex flex-wrap gap-2">
                   {String(value).split(',').map((keyword, i) => (
                     <span
                       key={i}
-                      style={{ 
-                        padding: '6px 12px', 
-                        borderRadius: 6, 
-                        fontSize: 13,
-                        fontWeight: 500,
-                        backgroundColor: colors.bgHex,
-                        color: colors.textHex
-                      }}
+                      className={`px-3 py-1.5 rounded-md text-[13px] font-medium ${colors.bg} ${colors.text}`}
                     >
                       {keyword.trim()}
                     </span>
                   ))}
                 </div>
               ) : (
-                <p 
-                  style={{ 
-                    fontSize: 14, 
-                    lineHeight: 1.5,
-                    color: '#475569',
-                    margin: 0
-                  }}
-                >
+                <p className="text-sm leading-relaxed text-slate-600 m-0">
                   {String(value).slice(0, 80)}{String(value).length > 80 ? '...' : ''}
                 </p>
               )}

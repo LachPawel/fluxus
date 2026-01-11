@@ -36,15 +36,8 @@ export function NodeEditor({
 
   if (!nodeDef) {
     return (
-      <div 
-        style={{ 
-          width: 320, 
-          backgroundColor: '#ffffff', 
-          borderLeft: '1px solid #e2e8f0', 
-          padding: 16 
-        }}
-      >
-        <p style={{ color: '#dc2626', fontSize: 14 }}>Unknown node type: {nodeType}</p>
+      <div className="w-[320px] bg-white border-l border-slate-200 p-4">
+        <p className="text-red-600 text-sm">Unknown node type: {nodeType}</p>
       </div>
     );
   }
@@ -62,60 +55,31 @@ export function NodeEditor({
   };
 
   return (
-    <div 
-      style={{ 
-        width: 340, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100%',
-        backgroundColor: '#ffffff',
-        borderLeft: '1px solid #e2e8f0'
-      }}
-    >
+    <div className="flex flex-col w-[340px] h-full bg-white border-l border-slate-200 shadow-xl z-20">
       {/* Header */}
-      <div 
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          padding: '16px 20px',
-          backgroundColor: colors.bgHex,
-          borderBottom: '1px solid #e2e8f0'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ padding: 8, borderRadius: 8, backgroundColor: '#ffffff', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
-            <DynamicIcon name={nodeDef.icon} style={{ width: 18, height: 18, color: colors.textHex }} />
+      <div className={`flex items-center justify-between px-5 py-4 border-b border-slate-200 ${colors.bg}`}>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-white shadow-sm">
+            <DynamicIcon name={nodeDef.icon} className={`w-[18px] h-[18px] ${colors.text}`} />
           </div>
-          <span style={{ fontSize: 15, fontWeight: 600, color: colors.textHex }}>{data.label}</span>
+          <span className={`text-base font-semibold ${colors.text}`}>{data.label}</span>
         </div>
         <button
           onClick={onClose}
           title="Close"
-          style={{ 
-            padding: 6, 
-            borderRadius: 6, 
-            border: 'none',
-            backgroundColor: 'transparent',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+          className="flex items-center justify-center p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-white/50 transition-colors cursor-pointer"
         >
-          <LucideIcons.X style={{ width: 18, height: 18, color: '#94a3b8' }} />
+          <LucideIcons.X className="w-[18px] h-[18px]" />
         </button>
       </div>
 
       {/* Description */}
-      <div style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: '#64748b', margin: 0 }}>{nodeDef.description}</p>
+      <div className="px-5 py-4 border-b border-slate-100">
+        <p className="text-sm leading-relaxed text-slate-500 m-0">{nodeDef.description}</p>
       </div>
 
       {/* Form Fields */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-6">
         {nodeDef.fields.map((field) => (
           <FormField
             key={field.name}
@@ -127,51 +91,17 @@ export function NodeEditor({
       </div>
 
       {/* Footer */}
-      <div style={{ padding: '16px 20px', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="px-5 py-4 border-t border-slate-200 flex flex-col gap-3 bg-slate-50">
         <button
-          style={{
-             width: '100%',
-             display: 'flex', 
-             alignItems: 'center', 
-             justifyContent: 'center', 
-             gap: 8, 
-             padding: '12px 16px', 
-             fontSize: 14,
-             fontWeight: 500,
-             color: '#ffffff',
-             backgroundColor: '#2563eb',
-             border: 'none',
-             borderRadius: 8,
-             cursor: 'pointer',
-             transition: 'background-color 200ms'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#2563eb'; }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-sm shadow-blue-600/20"
         >
           Save
         </button>
         <button
           onClick={handleDelete}
-          style={{
-             width: '100%',
-             display: 'flex', 
-             alignItems: 'center', 
-             justifyContent: 'center', 
-             gap: 8, 
-             padding: '12px 16px', 
-             fontSize: 14,
-             fontWeight: 500,
-             color: '#dc2626',
-             backgroundColor: '#fef2f2',
-             border: '1px solid #fecaca',
-             borderRadius: 8,
-             cursor: 'pointer',
-             transition: 'background-color 200ms'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fee2e2'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2'; }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all cursor-pointer shadow-sm"
         >
-          <LucideIcons.Trash2 style={{ width: 16, height: 16 }} />
+          <LucideIcons.Trash2 className="w-4 h-4" />
           Delete Node
         </button>
       </div>
