@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Fluxus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![CI](https://github.com/LachPawel/fluxus/actions/workflows/ci.yml/badge.svg)
 
-Currently, two official plugins are available:
+Fluxus is a modern, visual flow builder application designed to create and manage complex workflows with ease. Built with **React**, **TypeScript**, and **React Flow**, it offers a powerful and intuitive node-based interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Visual Flow Editor**: Intuitive drag-and-drop interface for building flows.
+- **Custom Node System**: Support for various node types including Triggers, Actions, Conditions, and Utilities.
+- **Dynamic Properties Panel**: Edit node configurations using a context-aware side panel with support for text, select, boolean, and number inputs.
+- **Node Palette**: Categorized list of available nodes for easy access.
+- **Extensible Architecture**: Easy to define new node types and fields.
+- **Type-Safe**: Built with TypeScript for robustness and maintainability.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **Framework**: React 19
+- **Build Tool**: Vite
+- **Flow Library**: @xyflow/react (React Flow)
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Testing**: Vitest + React Testing Library
+- **Linting & Formatting**: ESLint + Prettier
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js (v20 or higher recommended)
+- pnpm (v9 recommended)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+### Installation
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Clone the repository:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+   ```bash
+   git clone https://github.com/LachPawel/fluxus.git
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+2. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+### Scripts
+
+- `pnpm dev`: Start the development server.
+- `pnpm build`: Build the application for production.
+- `pnpm test`: Run the test suite.
+- `pnpm lint`: Run ESLint.
+- `pnpm format`: Format code with Prettier.
+
+## Contributing
+
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'Add some amazing feature'`).
+4. Push to the branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
+
+## License
+
+[MIT](LICENSE)
