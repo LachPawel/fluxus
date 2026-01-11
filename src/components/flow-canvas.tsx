@@ -28,6 +28,7 @@ import {
 } from '@/lib/nodes';
 import { initialNodes, initialEdges } from '@/lib/initial-data';
 import { getMiniMapNodeColor } from '@/utils/flow-utils';
+import { useFlowTheme } from '@/hooks/use-flow-theme';
 
 // =============================================================================
 // Flow Canvas Component
@@ -38,6 +39,9 @@ export function FlowCanvas() {
   const [nodes, setNodes] = useState<FlowNode[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+  // Theme
+  const theme = useFlowTheme();
 
   // Memoize node types
   const nodeTypes = useMemo(() => createNodeTypes(), []);
@@ -170,17 +174,17 @@ export function FlowCanvas() {
           snapToGrid
           snapGrid={[16, 16]}
           defaultEdgeOptions={{
-            style: { stroke: '#94a3b8', strokeWidth: 2 },
+            style: theme.defaultEdgeOptions.style,
             type: 'smoothstep',
           }}
-          connectionLineStyle={{ stroke: '#3b82f6', strokeWidth: 2 }}
+          connectionLineStyle={theme.connectionLineStyle}
           connectionLineType={ConnectionLineType.SmoothStep}
         >
           <Background
             variant={BackgroundVariant.Dots}
             gap={20}
             size={1}
-            color="#cbd5e1"
+            color={theme.background.color}
           />
           <Controls 
             className="bg-white border border-slate-200 rounded-lg shadow-md p-1"
@@ -188,7 +192,7 @@ export function FlowCanvas() {
           />
           <MiniMap
             nodeColor={getMiniMapNodeColor}
-            maskColor="rgba(248, 250, 252, 0.8)"
+            maskColor={theme.minimap.maskColor}
             className="bg-white border border-slate-200 rounded-lg shadow-md"
             style={{}}
           />
