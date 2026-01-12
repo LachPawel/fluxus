@@ -355,11 +355,11 @@ export function FlowCanvas() {
         {/* Template Flow Button */}
         <button
           onClick={() => setShowTemplatePicker(true)}
-          className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all z-10"
+          className="absolute top-4 left-4 flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 bg-black text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all z-10"
           title="Load Template Flow"
         >
           <FolderOpen className="w-4 h-4" />
-          <span className="text-sm font-medium">Templates</span>
+          <span className="text-sm font-medium hidden sm:inline">Templates</span>
         </button>
 
         {pickerState.visible && (
@@ -390,7 +390,7 @@ export function FlowCanvas() {
           onClose={onEditorClose}
         />
       ) : (
-        <div className="w-[340px] flex flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
+        <div className="hidden md:flex w-[340px] flex-col items-center justify-center p-8 bg-white border-l border-slate-200">
           <div className="text-center">
             <div className="w-[72px] h-[72px] flex items-center justify-center mx-auto mb-5 bg-slate-100 rounded-full">
               <SelectNodeIcon className="w-8 h-8 text-slate-800" />

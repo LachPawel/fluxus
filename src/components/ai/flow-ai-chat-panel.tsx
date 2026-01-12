@@ -127,18 +127,18 @@ export function FlowAIChatPanel({
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-black text-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center z-50"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 bg-black text-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center z-50"
         title="Open AI Flow Assistant"
       >
-        <Sparkles className="w-6 h-6" />
+        <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
       </button>
     );
   }
 
   return (
     <div
-      className={`fixed bottom-6 right-6 w-[400px] bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col z-50 transition-all ${
-        isMinimized ? 'h-14' : 'h-[600px] max-h-[80vh]'
+      className={`fixed inset-x-4 bottom-4 md:inset-auto md:bottom-6 md:right-6 md:w-[400px] bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col z-50 transition-all ${
+        isMinimized ? 'h-14' : 'h-[calc(100vh-8rem)] md:h-[600px] md:max-h-[80vh]'
       }`}
     >
       {/* Header */}

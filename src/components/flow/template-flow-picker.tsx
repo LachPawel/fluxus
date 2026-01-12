@@ -40,8 +40,8 @@ export function TemplateFlowPicker({ onSelect, onClose }: TemplateFlowPickerProp
     : allFlows;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-[700px] max-h-[80vh] flex flex-col overflow-hidden border border-slate-200">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[700px] max-h-[90vh] md:max-h-[80vh] flex flex-col overflow-hidden border border-slate-200">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 bg-black">
           <div className="flex items-center gap-3 text-white">
