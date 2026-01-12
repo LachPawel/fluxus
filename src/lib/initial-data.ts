@@ -16,7 +16,7 @@ export const initialNodes: FlowNode[] = [
   {
     id: 'action-1',
     type: 'action_message',
-    position: { x: 250, y: 300 },
+    position: { x: 250, y: 400 },
     data: {
       type: 'action_message',
       label: 'Send Message',

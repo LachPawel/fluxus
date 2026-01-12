@@ -137,8 +137,8 @@ export function FlowAIChatPanel({
 
   return (
     <div
-      className={`fixed inset-x-4 bottom-4 md:inset-auto md:bottom-6 md:right-6 md:w-[400px] bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col z-50 transition-all ${
-        isMinimized ? 'h-14' : 'h-[calc(100vh-8rem)] md:h-[600px] md:max-h-[80vh]'
+      className={`fixed left-4 right-4 bottom-4 md:left-auto md:right-6 md:bottom-6 md:w-[400px] bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col z-50 transition-all ${
+        isMinimized ? 'h-14' : 'h-[70vh] md:h-[600px] md:max-h-[80vh]'
       }`}
     >
       {/* Header */}
